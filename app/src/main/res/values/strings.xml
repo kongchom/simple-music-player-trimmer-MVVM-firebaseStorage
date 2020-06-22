@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">ViewMusicChoose</string>
+    <string name="music_activity_title">Music</string>
+    <string name="featured_fragment_title">Featured</string>
+    <string name="my_music_fragment_title">My Music</string>
+    <string name="effects_fragment_title">Effects</string>
 </resources>

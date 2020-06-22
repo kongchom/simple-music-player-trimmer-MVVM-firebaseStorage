@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'realm-android'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 29
@@ -31,6 +32,8 @@ android {
 }
 
 dependencies {
+    def lifecycle_version = "2.2.0"
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.0'
@@ -61,5 +64,44 @@ dependencies {
 
     implementation project(':managerstorage')
 
+    //Constraint Layout
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+
+    // RecyclerView
+    implementation "androidx.recyclerview:recyclerview:1.1.0"
+
+    implementation 'com.intuit.sdp:sdp-android:1.0.6'
+    implementation 'com.intuit.ssp:ssp-android:1.0.6'
+
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+
+    // cardview
+    implementation "androidx.cardview:cardview:1.0.0"
+
+    //viewpager
+    implementation 'androidx.viewpager2:viewpager2:1.1.0-alpha01'
+
+    //material design
+    implementation 'com.google.android.material:material:1.3.0-alpha01'
+
+    //RxJava
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+
+    //Timber
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
+    //Architecture component
+    // ViewModel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
+    // LiveData
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
+
+    //Dagger
+    implementation 'com.google.dagger:dagger:2.28'
+    kapt 'com.google.dagger:dagger-compiler:2.28'
+
+    //fragment viewModels
+    implementation 'androidx.fragment:fragment-ktx:1.2.5'
+
 }
-apply plugin: 'com.google.gms.google-services'
