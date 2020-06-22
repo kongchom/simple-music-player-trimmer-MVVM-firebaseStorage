@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/_5sdp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/item_choose_music_layout_music"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/d_core_border_music_name">
+
+        <ImageView
+            android:id="@+id/iv_disk"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/icon_mp3" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_toLeftOf="@+id/tvAdd"
+            android:layout_toRightOf="@+id/iv_disk"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Name"
+                android:textColor="@color/c_fff"
+                android:textSize="@dimen/_12ssp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_3sdp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="@dimen/_10sdp"
+                    android:layout_height="@dimen/_10sdp"
+                    android:background="@drawable/icon_clock" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_3sdp"
+                    android:maxLines="2"
+                    android:text="time"
+                    android:textColor="@color/c_f15b5b"
+                    android:textSize="@dimen/_10ssp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvAdd"
+            android:layout_width="@dimen/_35sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/d_core_border_add"
+            android:gravity="center"
+            android:text="Add"
+            android:textColor="@color/c_fff"
+            android:textSize="@dimen/_10ssp"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/imgDownMusic"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="@dimen/_30sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:padding="6dp"
+            android:src="@drawable/icon_download"
+            android:visibility="gone" />
+
+        <com.mikhaellopez.circularprogressbar.CircularProgressBar
+            android:id="@+id/circularProgress"
+            android:layout_width="@dimen/_25sdp"
+            android:layout_height="@dimen/_25sdp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:visibility="gone"
+            app:cpb_background_progressbar_color="@color/c_fff"
+            app:cpb_background_progressbar_width="@dimen/_1sdp"
+            app:cpb_progress="10"
+            app:cpb_progressbar_color="@color/c_ff5f5f"
+            app:cpb_progressbar_width="@dimen/_3sdp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rlDetailMusic"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60sdp"
+        android:background="@drawable/d_core_border_music_play"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgPlay"
+            android:layout_width="@dimen/_30sdp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:padding="@dimen/_10sdp"
+            android:src="@drawable/icon_pause"
+            android:text="Save" />
+
+        <g3.viewmusicchoose.CustomTrimView
+            android:id="@+id/trimView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/imgPlay" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linear_ad_music_online"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone" />
+</LinearLayout>

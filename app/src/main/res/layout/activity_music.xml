@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorAccent"
+    android:orientation="vertical"
+    tools:mContext="g3.videoeditor.musicvideomaker.ui.activity.MusicActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp">
+
+        <LinearLayout
+            android:id="@+id/music_layout_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_20sdp">
+
+            <ImageView
+                android:id="@+id/imgBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_launcher_background" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:gravity="left|center_vertical"
+            android:text="Choose Music"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/_20ssp" />
+    </RelativeLayout>
+
+
+    <!--<com.astuetz.PagerSlidingTabStrip-->
+    <!--android:id="@+id/tabs"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="@dimen/height_header"-->
+    <!--android:background="@color/color_light_white"-->
+    <!--app:pstsIndicatorColor="@color/color_pink"-->
+    <!--app:pstsUnderlineColor="@color/color_pink"-->
+    <!--app:pstsIndicatorHeight="3dp"-->
+    <!--app:pstsShouldExpand="true" />-->
+
+    <RelativeLayout
+        android:id="@+id/my_video_layout_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <View
+            android:layout_width="@dimen/_190sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/tab_bg_solid" />
+
+        <FrameLayout
+            android:layout_width="@dimen/_190sdp"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_centerHorizontal="true"
+            android:clipToPadding="false"
+            tools:ignore="MissingConstraints">
+
+            <View
+                android:id="@+id/indicator"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/gradient_bg" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabs_music"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_35sdp"
+                android:background="@drawable/tab_bg"
+                app:tabGravity="fill"
+                app:tabIndicatorColor="@null"
+                app:tabMode="fixed"
+                app:tabRippleColor="@null"
+                app:tabSelectedTextColor="@color/c_fff"
+                app:tabTextAppearance="@style/CustomTabLayout"
+                app:tabTextColor="@color/c_c5c5c5" />
+
+        </FrameLayout>
+    </RelativeLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/viewpager_tab_music"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_10sdp" />
+
+</LinearLayout>

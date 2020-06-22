@@ -1,0 +1,2 @@
+include ':app', ':managerstorage', ':mylibutils'
+rootProject.name = "ViewMusicChoose"

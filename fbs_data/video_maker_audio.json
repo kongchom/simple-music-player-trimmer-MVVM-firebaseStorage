@@ -1,0 +1,120 @@
+{
+"data":{
+"list_audio":[
+{
+"key_id":"a_new_beginning.mp3",
+"audio_name":"A New Beginning",
+"audio_url":"Audio/a_new_beginning.mp3",
+"duration":155
+},
+{
+"key_id":"acoustic_breeze.mp3",
+"audio_name":"Acoustic Breeze",
+"audio_url":"Audio/acoustic_breeze.mp3",
+"duration":157
+},
+{
+"key_id":"buddy.mp3",
+"audio_name":"Buddy Soundz",
+"audio_url":"Audio/buddy.mp3",
+"duration":122
+},
+{
+"key_id":"creepy.mp3",
+"audio_name":"Creepy",
+"audio_url":"Audio/creepy.mp3",
+"duration":217
+},
+{
+"key_id":"cute.mp3",
+"audio_name":"Cute - Open Sounds",
+"audio_url":"Audio/cute.mp3",
+"duration":194
+},
+{
+"key_id":"endless_motion.mp3",
+"audio_name":"Endless Motion",
+"audio_url":"Audio/endless_motion.mp3",
+"duration":181
+},
+{
+"key_id":"epic.mp3",
+"audio_name":"Epic Sound",
+"audio_url":"Audio/epic.mp3",
+"duration":179
+},
+{
+"key_id":"funky_element.mp3",
+"audio_name":"Funky Element",
+"audio_url":"Audio/funky_element.mp3",
+"duration":189
+},
+{
+"key_id":"going_higher.mp3",
+"audio_name":"Going Higher",
+"audio_url":"Audio/going_higher.mp3",
+"duration":245
+},
+{
+"key_id":"happy_rock.mp3",
+"audio_name":"Happy Rock",
+"audio_url":"Audio/happy_rock.mp3",
+"duration":106
+},
+{
+"key_id":"inspire.mp3",
+"audio_name":"Inspire Mp3",
+"audio_url":"Audio/inspire.mp3",
+"duration":213
+},
+{
+"key_id":"instinct.mp3",
+"audio_name":"Instinct Audio",
+"audio_url":"Audio/instinct.mp3",
+"duration":204
+},
+{
+"key_id":"jazzy_frenchy.mp3",
+"audio_name":"Jazzy Frendchy",
+"audio_url":"Audio/jazzy_frenchy.mp3",
+"duration":105
+},
+{
+"key_id":"little_idea.mp3",
+"audio_name":"Little Idea",
+"audio_url":"Audio/little_idea.mp3",
+"duration":169
+},
+{
+"key_id":"memories.mp3",
+"audio_name":"Memories Sound",
+"audio_url":"Audio/memories.mp3",
+"duration":230
+},
+{
+"key_id":"once_again.mp3",
+"audio_name":"Once Again",
+"audio_url":"Audio/once_again.mp3",
+"duration":232
+},
+{
+"key_id":"summer.mp3",
+"audio_name":"Summer Audio",
+"audio_url":"Audio/summer.mp3",
+"duration":217
+},
+{
+"key_id":"sunny.mp3",
+"audio_name":"Sunny Audio",
+"audio_url":"Audio/sunny.mp3",
+"duration":140
+},
+{
+"key_id":"ukulele.mp3",
+"audio_name":"Ukulele Sound",
+"audio_url":"Audio/ukulele.mp3",
+"duration":146
+}
+]
+}
+}

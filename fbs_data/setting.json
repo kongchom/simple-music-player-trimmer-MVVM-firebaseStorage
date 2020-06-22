@@ -1,0 +1,2 @@
+    public final static String PATH_DOWNLOAD_AUDIO = "/Video/Audio/";
+    public static final String FB_URL_VIDEO_MAKER_AUDIO = "/API/VideoMaker/video_maker_audio.json";
