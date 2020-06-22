@@ -489,7 +489,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
 
         isDownloading = true;
 
-        mCustomProgressBar.show(Objects.requireNonNull(getActivity()));
+        mCustomProgressBar.show(requireActivity());
         String outAudioFolder = GlobalDef.FOLDER_AUDIO;
         FunctionUtils.createFolder(outAudioFolder);
 

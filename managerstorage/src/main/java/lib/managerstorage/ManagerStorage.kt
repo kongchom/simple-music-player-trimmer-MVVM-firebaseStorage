@@ -24,7 +24,7 @@ import java.io.InputStream
 class ManagerStorage {
     companion object {
         val TAG: String = "ManagerStorage"
-        const val BUCKET: String = ""
+        const val BUCKET: String = "gs://scenic-casing-258204.appspot.com"
         lateinit var storage: FirebaseStorage
 
         //------------------------------------------------------------------------------------------

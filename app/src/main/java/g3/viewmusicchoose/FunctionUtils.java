@@ -1,10 +1,12 @@
 package g3.viewmusicchoose;
 
 import android.content.Context;
+import android.content.Intent;
 import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.provider.Settings;
 
 import java.io.File;
 
@@ -74,4 +76,13 @@ public class FunctionUtils {
                     }
                 });
     }
+
+    public static void openAppSettings(Context context, String packageName) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", packageName, null);
+        intent.setData(uri);
+        context.startActivity(intent);
+    }
+
 }

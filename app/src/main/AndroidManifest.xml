@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name="g3.viewmusicchoose.MusicApplication">
-        <activity android:name=".MainMusicActivity">
+        <activity android:name=".ui.MainMusicActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
