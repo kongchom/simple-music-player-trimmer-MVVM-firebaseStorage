@@ -2,6 +2,7 @@ package g3.viewchoosephoto.di
 
 import dagger.Component
 import g3.viewmusicchoose.ui.MainMusicActivity
+import g3.viewmusicchoose.ui.featured.FeaturedFragment
 import javax.inject.Singleton
 
 
@@ -9,4 +10,6 @@ import javax.inject.Singleton
 @Singleton
 interface AppComponent {
     fun inject(activity: MainMusicActivity)
+
+    fun inject(fragment: FeaturedFragment)
 }

@@ -1,5 +1,8 @@
 package g3.viewmusicchoose.repo.featured
 
-class CheckInternetConnectionUseCase {
+import javax.inject.Inject
 
+class CheckInternetConnectionUseCase @Inject constructor(
+    private val repo: IMusicRepository
+){
 }

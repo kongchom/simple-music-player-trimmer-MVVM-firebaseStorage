@@ -7,6 +7,8 @@ import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
+import g3.viewmusicchoose.repo.featured.IMusicRepository
+import g3.viewmusicchoose.repo.featured.LocalMusicRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -19,10 +21,9 @@ class AppModule constructor(
     @Singleton
     fun provideContext(): Context = applicationContext
 
-//    @Provides
-//    @Singleton
-//    fun provideLocalMediaRepository(): ILocalMediaRepository {
-//        return LocalMediaRepository(context)
-//    }
-
+    @Provides
+    @Singleton
+    fun provideMusicRepository(): IMusicRepository {
+        return LocalMusicRepository(applicationContext)
+    }
 }
