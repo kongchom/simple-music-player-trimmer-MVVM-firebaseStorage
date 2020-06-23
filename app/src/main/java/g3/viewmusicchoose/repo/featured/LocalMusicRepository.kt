@@ -11,6 +11,7 @@ import lib.managerstorage.OnGetStringFromUrlListener
 import timber.log.Timber
 import java.io.File
 import java.io.InputStream
+import java.lang.Exception
 import javax.inject.Inject
 
 class LocalMusicRepository @Inject constructor(
@@ -18,7 +19,6 @@ class LocalMusicRepository @Inject constructor(
 ) : IMusicRepository {
 
     override fun getRemoteAudio(): Single<List<LocalSong>> {
-
         return Single.just(emptyList())
     }
 
@@ -27,16 +27,22 @@ class LocalMusicRepository @Inject constructor(
     }
 
     override fun getStringConfigJson(): Single<String> {
+        Timber.d("congnm getStringConfigJson")
         val storageReferenceChild =
             ManagerStorage.storage.reference.child(GlobalDef.FB_URL_VIDEO_MAKER_AUDIO)
         val localFile = File.createTempFile("fileTemp", "")
+        val inputStream: InputStream = localFile.inputStream()
+        var inputStr = ""
         return Single.create { emitter ->
             storageReferenceChild.getFile(localFile).addOnSuccessListener {
-                val inputStream: InputStream = localFile.inputStream()
-                val inputString = inputStream.bufferedReader().use { it.readText() }
+                try {
+                    inputStr  = inputStream.bufferedReader().use { it.readText() }
+                } catch (e: Exception) {
+                    emitter.onError(e)
+                }
                 inputStream.close()
                 localFile.delete()
-                emitter.onSuccess(inputString)
+                emitter.onSuccess(inputStr)
             }.addOnFailureListener {
                 Timber.d("congnm getStringConfigJson error ${it.message}")
                 it.printStackTrace()

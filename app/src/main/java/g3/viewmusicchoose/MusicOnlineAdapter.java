@@ -6,6 +6,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,6 +27,8 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+
+import timber.log.Timber;
 
 import static g3.viewmusicchoose.GlobalDef.FOLDER_AUDIO;
 
@@ -402,6 +405,7 @@ public class MusicOnlineAdapter extends RecyclerView.Adapter<MusicOnlineAdapter.
             mTvTime.setText(music.getDurationText());
             mTvName.setText(music.getName());
             mTrimView.setDuration(music.getDuration());
+            Timber.d(mTvName.getText().toString());
 
             mProgressBar.setVisibility(music.isLoading() ? View.VISIBLE : View.GONE);
             mProgressBar.setProgress(0);

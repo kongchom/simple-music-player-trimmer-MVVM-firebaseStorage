@@ -3,12 +3,13 @@ package g3.viewmusicchoose.ui.featured
 import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import g3.viewmusicchoose.LocalSong
+import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.repo.featured.CheckInternetConnectionUseCase
 import g3.viewmusicchoose.repo.featured.GetRemoteAudioDataUseCase
+import g3.viewmusicchoose.ui.featured.model.GetAllFirebaseDataUseCase
 import g3.viewmusicchoose.util.applyScheduler
 import g3.viewmusicchoose.util.notifyObserver
-import io.reactivex.Completable
+import timber.log.Timber
 import javax.inject.Inject
 
 class FeaturedFragmentViewModel @Inject constructor(
@@ -17,23 +18,33 @@ class FeaturedFragmentViewModel @Inject constructor(
     private val getAllFirebaseDataDataUseCase: GetAllFirebaseDataUseCase
 ) : ViewModel() {
 
-     var hotMusicList = MutableLiveData<MutableList<LocalSong>>()
+    var hotMusicList = MutableLiveData<MutableList<Music>>()
+    var hotAlbumList = MutableLiveData<MutableList<Music>>()
+    var strJson = ""
 
     init {
-        requestAllFirebaseData()
+        hotMusicList.value = ArrayList()
+        hotAlbumList.value = ArrayList()
     }
 
     @SuppressLint("CheckResult")
-    fun requestRemoteData() {
-        getRemoteAudioDataUseCase.requestFirebase().applyScheduler().subscribe({
-            hotMusicList.value?.addAll(it)
+    fun requestAllFirebaseData() {
+        getAllFirebaseDataDataUseCase.request(strJson).applyScheduler().subscribe({
+            Timber.d("congnm request all firebase data ${it.size}")
+            hotMusicList?.value?.addAll(it)
             hotMusicList.notifyObserver()
         }, {
-            it.printStackTrace()
+
         })
     }
 
-    fun requestAllFirebaseData() {
-        getAllFirebaseDataDataUseCase.request()
+    fun requestStringConfig() {
+        val str = getAllFirebaseDataDataUseCase.requestStr().applyScheduler().subscribe({
+            Timber.d("congnm requestStr $it")
+            strJson = it
+            requestAllFirebaseData()
+        }, {
+
+        })
     }
 }

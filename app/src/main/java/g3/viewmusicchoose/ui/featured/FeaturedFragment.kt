@@ -5,16 +5,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import g3.viewmusicchoose.MusicAdapter
 import g3.viewmusicchoose.MusicApplication
+import g3.viewmusicchoose.MusicOnlineAdapter
 import g3.viewmusicchoose.R
 import g3.viewmusicchoose.ui.MainMusicActivity
+import kotlinx.android.synthetic.main.fragment_featured.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class FeaturedFragment : Fragment() {
 
-    @Inject
     lateinit var mViewModel: FeaturedFragmentViewModel
-
+    @Inject set
+    private lateinit var hotMusicRv: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -25,7 +32,15 @@ class FeaturedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        hotMusicRv = requireView().findViewById(R.id.featured_fragment_hot_music_rv)
         MusicApplication.instance.appComponent.inject(this)
+        mViewModel.requestStringConfig()
+        mViewModel.hotMusicList.observe(requireActivity(), Observer {
+            Timber.d("congnm onObserve hot music ${it.size}")
+            hotMusicRv.adapter = MusicOnlineAdapter(context, it)
+            hotMusicRv.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+        })
+
     }
 
 }
