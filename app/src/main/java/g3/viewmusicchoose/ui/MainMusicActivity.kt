@@ -1,24 +1,29 @@
 package g3.viewmusicchoose.ui
 
 import android.Manifest
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import g3.viewmusicchoose.MusicApplication
-import g3.viewmusicchoose.PermissionNewVideoUtils
-import g3.viewmusicchoose.R
+import g3.viewmusicchoose.*
 import g3.viewmusicchoose.ui.featured.ui.FeaturedFragment
 import g3.viewmusicchoose.util.AppConstant
 import g3.viewmusicchoose.util.AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
 import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
 import g3.viewmusicchoose.util.DialogUtil
 import g3.viewmusicchoose.util.DialogUtil.showDenyDialog
+import g3.viewmusicchoose.util.DialogUtil.showDialogConfirm
+import timber.log.Timber
+import java.lang.System.exit
 import javax.inject.Inject
 
 class MainMusicActivity : AppCompatActivity() {
@@ -26,6 +31,8 @@ class MainMusicActivity : AppCompatActivity() {
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
 
+    @Inject
+    lateinit var mViewModel: MainMusicViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +40,13 @@ class MainMusicActivity : AppCompatActivity() {
         MusicApplication.instance.appComponent.inject(this)
         initViews()
         requestWriteStoragePermission()
+        mViewModel.initData()
     }
 
     private fun requestWriteStoragePermission() {
         PermissionNewVideoUtils.askForPermissionFolder(
             this,
-            AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
+            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
         ) {
             initViewPager()
         }
@@ -85,6 +93,8 @@ class MainMusicActivity : AppCompatActivity() {
         tabLayout = findViewById(R.id.music_activity_tab_layout)
     }
 
+
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -96,20 +106,27 @@ class MainMusicActivity : AppCompatActivity() {
             initViewPager()
         } else {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                DialogUtil.openAppSettings(
-                    this,
-                    isCancel = false,
-                    isFinishActivity = true
-                )
-                return
+                MaterialAlertDialogBuilder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+                    .setTitle(R.string.permission_denied)
+                    .setMessage(R.string.message_permission_denied)
+                    .setNegativeButton(R.string.exit) { _, _ ->
+                        this.finish()
+                    }
+                    .setPositiveButton(R.string.go_to_setting) { _, _ ->
+                        FunctionUtils.openAppSettings(this,this.packageName)
+                        this.finish()
+                    }.show()
+            } else {
+                MaterialAlertDialogBuilder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+                    .setTitle(R.string.permission_denied)
+                    .setMessage(R.string.message_permission_denied)
+                    .setNegativeButton(R.string.re_try) { _, _ ->
+                        requestWriteStoragePermission()
+                    }
+                    .setPositiveButton(R.string.i_am_sure) { _, _ ->
+                        this.finish()
+                    }.show()
             }
-            showDenyDialog(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE,
-                isFinishActivity = true,
-                isCancel = false
-            )
         }
     }
 }

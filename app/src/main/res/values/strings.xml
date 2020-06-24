@@ -7,4 +7,10 @@
     <string name="hot_album">Hot Album</string>
     <string name="hot_music">Hot Music</string>
     <string name="hot_album_tracks">Tracks</string>
+    <string name="i_am_sure">I\'m Sure</string>
+    <string name="re_try">Retry</string>
+    <string name="permission_denied">Permission Denied</string>
+    <string name="exit">Exit</string>
+    <string name="go_to_setting">App Setting</string>
+    <string name="network_error">No Internet connection. Please try again!</string>
 </resources>

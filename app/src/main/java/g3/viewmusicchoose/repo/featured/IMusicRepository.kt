@@ -18,4 +18,6 @@ interface IMusicRepository {
     fun getHotMusicList(str: String): Single<List<Music>>
 
     fun getHostAlbumList(str: String): Single<List<Album>>
+
+    fun isWifiConnected(): Single<Boolean>
 }

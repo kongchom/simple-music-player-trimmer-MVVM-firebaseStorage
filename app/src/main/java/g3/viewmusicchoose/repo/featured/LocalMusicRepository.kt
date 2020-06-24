@@ -1,6 +1,8 @@
 package g3.viewmusicchoose.repo.featured
 
 import android.content.Context
+import android.net.wifi.SupplicantState
+import android.net.wifi.WifiManager
 import com.google.gson.Gson
 import g3.viewmusicchoose.*
 import g3.viewmusicchoose.ui.featured.model.Album
@@ -79,6 +81,11 @@ class LocalMusicRepository @Inject constructor(
         saveHotAlbum(hotAlbumList)
         Timber.d("congnm get host list album repo ${hotAlbumList.size}")
         return Single.just(hotAlbumList)
+    }
+
+    override fun isWifiConnected(): Single<Boolean> {
+        val wifiMgr = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+        return Single.just(wifiMgr.connectionInfo.supplicantState == SupplicantState.COMPLETED)
     }
 
     private fun saveAudioData(musics: List<Music>) {
