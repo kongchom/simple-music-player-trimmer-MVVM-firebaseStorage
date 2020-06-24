@@ -13,17 +13,19 @@ import com.google.android.material.tabs.TabLayoutMediator
 import g3.viewmusicchoose.MusicApplication
 import g3.viewmusicchoose.PermissionNewVideoUtils
 import g3.viewmusicchoose.R
-import g3.viewmusicchoose.ui.featured.FeaturedFragment
+import g3.viewmusicchoose.ui.featured.ui.FeaturedFragment
 import g3.viewmusicchoose.util.AppConstant
 import g3.viewmusicchoose.util.AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
 import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
 import g3.viewmusicchoose.util.DialogUtil
 import g3.viewmusicchoose.util.DialogUtil.showDenyDialog
+import javax.inject.Inject
 
 class MainMusicActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,29 +93,24 @@ class MainMusicActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (permissions.isEmpty()) return
         if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
-            if (requestCode == MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    initViewPager()
-                } else {
-                    if (requestCode == MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE) {
-                        if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                            DialogUtil.openAppSettings(
-                                this,
-                                isCancel = false,
-                                isFinishActivity = true
-                            )
-                            return
-                        }
-                        showDenyDialog(
-                            this,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE,
-                            isFinishActivity = true,
-                            isCancel = false
-                        )
-                    }
-                }
+            initViewPager()
+        } else {
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                DialogUtil.openAppSettings(
+                    this,
+                    isCancel = false,
+                    isFinishActivity = true
+                )
+                return
             }
+            showDenyDialog(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE,
+                isFinishActivity = true,
+                isCancel = false
+            )
         }
     }
 }
+

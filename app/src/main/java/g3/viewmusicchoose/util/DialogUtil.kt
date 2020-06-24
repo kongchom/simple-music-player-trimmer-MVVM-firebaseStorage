@@ -38,7 +38,7 @@ object DialogUtil {
     ) {
         showDialogConfirm(
             activity,
-            R.string.app_name,
+            R.string.message_permission_denied,
             R.string.app_name,
             R.string.app_name, isCancel, onRetry, onCancel
         )

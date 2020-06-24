@@ -1,4 +1,4 @@
-package g3.viewmusicchoose.ui.featured
+package g3.viewmusicchoose.ui.featured.model
 
 import g3.viewmusicchoose.repo.featured.LocalMusicRepository
 import io.reactivex.Completable

@@ -34,22 +34,22 @@ public class MusicResponse extends BaseResponse {
 
     private class MainData {
         @SerializedName("list_audio")
-        private List<Music> audioes;
+        private List<Music> audios;
 
         @SerializedName("list_album")
         private List<Album> albums;
 
 
         public List<Music> getAudios() {
-            return audioes;
+            return audios;
         }
 
         public List<Album> getAlbums() {
             return albums;
         }
 
-        public void setAudioes(List<Music> audioes) {
-            this.audioes = audioes;
+        public void setAudios(List<Music> audios) {
+            this.audios = audios;
         }
         public void setAlbums(List<Album> albums) {
             this.albums = albums;

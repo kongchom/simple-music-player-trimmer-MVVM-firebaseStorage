@@ -6,4 +6,5 @@
     <string name="effects_fragment_title">Effects</string>
     <string name="hot_album">Hot Album</string>
     <string name="hot_music">Hot Music</string>
+    <string name="hot_album_tracks">Tracks</string>
 </resources>

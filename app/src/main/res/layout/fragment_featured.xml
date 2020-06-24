@@ -19,7 +19,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/featured_fragment_hot_album_rv"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_90sdp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/_13sdp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/featured_fragment_tv_hot_album"/>
