@@ -162,8 +162,8 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.ItemViewHold
             super(itemView);
             mRlLayoutMusic = itemView.findViewById(R.id.item_choose_music_layout_music);
 
-            mTvTime = (TextView) itemView.findViewById(R.id.tvTime);
-            mTvName = (TextView) itemView.findViewById(R.id.tvName);
+            mTvTime = (TextView) itemView.findViewById(R.id.item_hot_music_duration);
+            mTvName = (TextView) itemView.findViewById(R.id.item_hot_music_name);
             mTvAdd = (TextView) itemView.findViewById(R.id.tvAdd);
             mImgPlay = (ImageView) itemView.findViewById(R.id.imgPlay);
             mRlDetailMusic = (RelativeLayout) itemView.findViewById(R.id.rlDetailMusic);

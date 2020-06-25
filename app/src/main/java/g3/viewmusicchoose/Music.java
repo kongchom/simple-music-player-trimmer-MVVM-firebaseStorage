@@ -16,10 +16,10 @@ public class Music extends RealmObject {
     private String name;
     private int duration;
     @Ignore
-    private boolean isSelect;
+    private boolean isSelected;
     @SerializedName("audio_url")
     private String url;
-    private boolean isDownload;
+    private boolean isDownloaded;
     @Ignore
     private boolean isLoading;
     @Ignore
@@ -37,12 +37,12 @@ public class Music extends RealmObject {
         isLoading = loading;
     }
 
-    public boolean isDownload() {
-        return isDownload;
+    public boolean isDownloaded() {
+        return isDownloaded;
     }
 
-    public void setDownload(boolean download) {
-        isDownload = download;
+    public void setDownloaded(boolean downloaded) {
+        isDownloaded = downloaded;
     }
 
     public String getUrl() {
@@ -82,12 +82,12 @@ public class Music extends RealmObject {
         this.name = name;
     }
 
-    public boolean isSelect() {
-        return isSelect;
+    public boolean isSelected() {
+        return isSelected;
     }
 
-    public void setSelect(boolean select) {
-        isSelect = select;
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public boolean isAssetAudioFile() {

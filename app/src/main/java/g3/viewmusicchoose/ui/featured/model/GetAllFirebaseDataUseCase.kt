@@ -11,13 +11,5 @@ class GetAllFirebaseDataUseCase @Inject constructor(
     private val downloadFromFirebaseUseCase: DownloadAudioFromFirebaseUseCase,
     private val addAudioToLocalUseCase: AddAudioToLocalUseCase
 ) {
-    fun request(str: String): Single<List<Music>> {
-        Timber.d("congnm request getallfirebase")
-        return downloadFromFirebaseUseCase
-            .requestHotMusic(str)
-    }
 
-    fun requestStr(): Single<String> {
-        return downloadFromFirebaseUseCase.requestJsonStr()
-    }
 }

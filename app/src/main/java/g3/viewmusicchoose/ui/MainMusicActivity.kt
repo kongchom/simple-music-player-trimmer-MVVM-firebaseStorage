@@ -5,10 +5,12 @@ import android.app.Dialog
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -22,6 +24,7 @@ import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
 import g3.viewmusicchoose.util.DialogUtil
 import g3.viewmusicchoose.util.DialogUtil.showDenyDialog
 import g3.viewmusicchoose.util.DialogUtil.showDialogConfirm
+import kotlinx.android.synthetic.main.activity_main_music.*
 import timber.log.Timber
 import java.lang.System.exit
 import javax.inject.Inject
@@ -40,7 +43,23 @@ class MainMusicActivity : AppCompatActivity() {
         MusicApplication.instance.appComponent.inject(this)
         initViews()
         requestWriteStoragePermission()
-        mViewModel.initData()
+        mViewModel.isShowErrorScreen.observe(this, Observer { needToShowErrorScreen ->
+            if (needToShowErrorScreen) {
+                Timber.d("congnm show error true")
+                network_error_view_container.visibility = View.VISIBLE
+            } else {
+                Timber.d("congnm show error false")
+                network_error_view_container.visibility = View.GONE
+            }
+        })
+        initViewPager()
+        initListeners()
+    }
+
+    private fun initListeners() {
+        main_music_try_again.setOnClickListener {
+            mViewModel.initData()
+        }
     }
 
     private fun requestWriteStoragePermission() {
@@ -48,7 +67,7 @@ class MainMusicActivity : AppCompatActivity() {
             this,
             MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
         ) {
-            initViewPager()
+            mViewModel.initData()
         }
     }
 
@@ -93,8 +112,6 @@ class MainMusicActivity : AppCompatActivity() {
         tabLayout = findViewById(R.id.music_activity_tab_layout)
     }
 
-
-
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -103,7 +120,7 @@ class MainMusicActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (permissions.isEmpty()) return
         if (ActivityCompat.checkSelfPermission(this, permissions[0]) == PackageManager.PERMISSION_GRANTED) {
-            initViewPager()
+            mViewModel.initData()
         } else {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 MaterialAlertDialogBuilder(this,R.style.Theme_MaterialComponents_Light_Dialog_Alert)
@@ -128,6 +145,12 @@ class MainMusicActivity : AppCompatActivity() {
                     }.show()
             }
         }
+    }
+
+    override fun onStop() {
+        Timber.d("congnm onStop")
+        SharePrefUtils.putInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO, SharePrefUtils.getInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO,0).plus(1))
+        super.onStop()
     }
 }
 

@@ -28,6 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/hot_album_thumb_container"
         android:padding="@dimen/_4sdp"
+        android:textStyle="bold"
         android:textColor="@color/colorAccent"
         tools:text="Love"/>
 
@@ -35,18 +36,21 @@
         android:layout_width="@dimen/_75sdp"
         android:layout_height="wrap_content"
         android:layout_below="@id/hot_album_name"
+        android:padding="@dimen/_4sdp"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/hot_album_number_of_track"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/c_f15b5b"
             tools:text="100"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/_4sdp"
+            android:textColor="@color/c_f15b5b"
             android:text="@string/hot_album_tracks" />
     </LinearLayout>
 

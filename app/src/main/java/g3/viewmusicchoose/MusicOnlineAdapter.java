@@ -1,17 +1,13 @@
 package g3.viewmusicchoose;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
@@ -226,23 +222,23 @@ public class MusicOnlineAdapter extends RecyclerView.Adapter<MusicOnlineAdapter.
                     return;
                 }
 
-                if (mMusics.get(getLayoutPosition()).isDownload()) {
+                if (mMusics.get(getLayoutPosition()).isDownloaded()) {
                     if (mCurrentPosition == -1) {
-                        mMusics.get(getLayoutPosition()).setSelect(true);
+                        mMusics.get(getLayoutPosition()).setSelected(true);
                         mMusics.get(getLayoutPosition()).setLoading(false);
-                        mMusics.get(getLayoutPosition()).setDownload(true);
+                        mMusics.get(getLayoutPosition()).setDownloaded(true);
                         notifyItemChanged(getLayoutPosition());
                         mCurrentPosition = getLayoutPosition();
                         mImgPlay.setImageResource(R.drawable.icon_pause);
                         startPreviewMusic(0, mMusics.get(mCurrentPosition).getDuration());
                     } else {
                         if (mCurrentPosition != getLayoutPosition()) {
-                            mMusics.get(mCurrentPosition).setSelect(false);
+                            mMusics.get(mCurrentPosition).setSelected(false);
                             mMusics.get(mCurrentPosition).setLoading(false);
 
-                            mMusics.get(getLayoutPosition()).setSelect(true);
+                            mMusics.get(getLayoutPosition()).setSelected(true);
                             mMusics.get(getLayoutPosition()).setLoading(false);
-                            mMusics.get(getLayoutPosition()).setDownload(true);
+                            mMusics.get(getLayoutPosition()).setDownloaded(true);
                             notifyItemChanged(mCurrentPosition);
                             notifyItemChanged(getLayoutPosition());
                             stopPreview();
@@ -269,7 +265,7 @@ public class MusicOnlineAdapter extends RecyclerView.Adapter<MusicOnlineAdapter.
                     } else {
                         if (mCurrentPosition != getLayoutPosition()) {
                             mMusics.get(mCurrentPosition).setLoading(false);
-                            mMusics.get(mCurrentPosition).setSelect(false);
+                            mMusics.get(mCurrentPosition).setSelected(false);
 
                             mMusics.get(getLayoutPosition()).setLoading(true);
                             notifyItemChanged(mCurrentPosition);
@@ -353,12 +349,12 @@ public class MusicOnlineAdapter extends RecyclerView.Adapter<MusicOnlineAdapter.
         public void hideItem() {
             // Update data
             if (mCurrentPosition == -1) {
-                mMusics.get(getLayoutPosition()).setSelect(false);
+                mMusics.get(getLayoutPosition()).setSelected(false);
                 mMusics.get(getLayoutPosition()).setLoading(false);
                 notifyItemChanged(getLayoutPosition());
                 stopPreview();
             } else {
-                mMusics.get(mCurrentPosition).setSelect(false);
+                mMusics.get(mCurrentPosition).setSelected(false);
                 mMusics.get(mCurrentPosition).setLoading(false);
                 notifyItemChanged(mCurrentPosition);
                 stopPreview();
@@ -409,14 +405,14 @@ public class MusicOnlineAdapter extends RecyclerView.Adapter<MusicOnlineAdapter.
 
             mProgressBar.setVisibility(music.isLoading() ? View.VISIBLE : View.GONE);
             mProgressBar.setProgress(0);
-            mImgPlay.setImageResource(music.isSelect() ? R.drawable.icon_pause : R.drawable.icon_play_music);
+            mImgPlay.setImageResource(music.isSelected() ? R.drawable.icon_pause : R.drawable.icon_play_music);
 
             // Check audio is Downloaded?
             String audioPath = FOLDER_AUDIO + music.getAudioFileName();
             File audioFile = new File(audioPath);
-            music.setDownload(audioFile.exists());
+            music.setDownloaded(audioFile.exists());
 
-            if (music.isDownload() && music.isSelect()) {
+            if (music.isDownloaded() && music.isSelected()) {
                 mTvAdd.setVisibility(View.VISIBLE);
                 mRlDetailMusic.setVisibility(View.VISIBLE);
                 mRlLayoutMusic.setBackground(mContext.getResources().getDrawable(R.drawable.d_core_border_music_name_selected));
@@ -428,7 +424,7 @@ public class MusicOnlineAdapter extends RecyclerView.Adapter<MusicOnlineAdapter.
                 mRlDetailMusic.setVisibility(View.GONE);
             }
 
-            if (!music.isDownload() && !music.isLoading()) {
+            if (!music.isDownloaded() && !music.isLoading()) {
                 mImgDown.setVisibility(View.VISIBLE);
             } else {
                 mImgDown.setVisibility(View.GONE);

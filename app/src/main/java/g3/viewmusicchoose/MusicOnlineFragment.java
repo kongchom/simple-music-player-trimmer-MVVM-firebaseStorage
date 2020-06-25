@@ -17,7 +17,6 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -170,7 +169,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
                         File localFile = new File(audioPath);
                         // If audio is exist, set flag download to true (don't needed re-download)
                         if (localFile.exists()) {
-                            music.setDownload(true);
+                            music.setDownloaded(true);
                         }
                     }
 
@@ -505,7 +504,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
                         if (getActivity() != null && !getActivity().isFinishing()) {
                             // DOWNLOAD SUCCESS
                             if (mCurrentPosition != -1 && mCurrentPosition < mMusics.size()) {
-                                mMusics.get(mCurrentPosition).setDownload(true);
+                                mMusics.get(mCurrentPosition).setDownloaded(true);
                                 mMusics.get(mCurrentPosition).setLoading(false);
                             }
                             // Notify download success and play audio
@@ -516,10 +515,10 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
                                             (MusicOnlineAdapter.ItemViewHolder) mRecycler.findViewHolderForAdapterPosition(mCurrentPosition);
                                     if (holder != null && isAdded() && isVisible() && getUserVisibleHint()) {
                                         // when Activity is live
-                                        mMusics.get(mCurrentPosition).setSelect(true);
+                                        mMusics.get(mCurrentPosition).setSelected(true);
                                         holder.startPreviewMusic(0, mMusics.get(mCurrentPosition).getDuration());
                                     } else if (holder != null) {
-                                        mMusics.get(mCurrentPosition).setSelect(false);
+                                        mMusics.get(mCurrentPosition).setSelected(false);
                                         holder.hideItem();
                                     }
                                 }
@@ -529,7 +528,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
                                 // Save Data
                                 RealmUtil.getInstance().saveData(mMusics.get(mCurrentPosition));
                                 // Reset index if audio download not play
-                                if (!mMusics.get(mCurrentPosition).isSelect()) {
+                                if (!mMusics.get(mCurrentPosition).isSelected()) {
                                     mCurrentPosition = -1;
                                 }
                             });
@@ -545,8 +544,8 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
 
                         // Set Music model to default like not yet download
                         if (mCurrentPosition != -1 && mCurrentPosition < mMusics.size()) {
-                            mMusics.get(mCurrentPosition).setDownload(false);
-                            mMusics.get(mCurrentPosition).setSelect(false);
+                            mMusics.get(mCurrentPosition).setDownloaded(false);
+                            mMusics.get(mCurrentPosition).setSelected(false);
                             mMusics.get(mCurrentPosition).setLoading(false);
                         }
                         // Notify item still download to default layout

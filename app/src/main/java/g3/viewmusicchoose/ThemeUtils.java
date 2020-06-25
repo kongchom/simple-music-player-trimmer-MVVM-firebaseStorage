@@ -29,8 +29,8 @@ public class ThemeUtils {
                             musicLocal.setDuration(Integer.parseInt(duration) / 1000);
                             musicLocal.setUrl(audioPath);
                             musicLocal.setName(fileName);
-                            musicLocal.setDownload(true);
-                            musicLocal.setSelect(false);
+                            musicLocal.setDownloaded(true);
+                            musicLocal.setSelected(false);
                             listMusicDefault.add(musicLocal);
                         }
                     }

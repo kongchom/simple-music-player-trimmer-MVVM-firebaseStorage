@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName
 import g3.viewmusicchoose.Music
 import io.realm.RealmList
 import io.realm.RealmObject
-import io.realm.annotations.Ignore
 import io.realm.annotations.PrimaryKey
 import java.io.File
 
@@ -22,8 +21,8 @@ open class Album : RealmObject() {
     @SerializedName("album_thumb")
     private var thumbPath: String = ""
 
-    @Ignore
-    private var listAudio: List<Music> = emptyList()
+    @SerializedName("list_audio")
+    private var listAudioOfHotAlbum: RealmList<Music>? = null
 
     fun getName() : String {
         return this.name
@@ -46,14 +45,14 @@ open class Album : RealmObject() {
     }
 
     fun getNumOfTrack() : Int {
-        return this.listAudio.size
+        return this.numOfTrack
     }
 
-    fun getListAudio(): List<Music> {
-        return this.listAudio
+    fun getListAudio(): RealmList<Music> {
+        return this.listAudioOfHotAlbum!!
     }
 
-    fun setListAudio(list: List<Music>) {
-        this.listAudio = list
+    fun setListAudio(list: RealmList<Music>) {
+        this.listAudioOfHotAlbum = list
     }
 }

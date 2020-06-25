@@ -29,7 +29,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvName"
+                android:id="@+id/item_hot_music_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -52,7 +52,7 @@
                     android:src="@drawable/icon_clock" />
 
                 <TextView
-                    android:id="@+id/tvTime"
+                    android:id="@+id/item_hot_music_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_3sdp"
