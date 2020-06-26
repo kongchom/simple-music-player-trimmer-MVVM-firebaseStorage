@@ -19,4 +19,5 @@ interface IMusicRepository {
     fun isWifiConnected(): Single<Boolean>
 
     fun observeData(cbData: (() -> Unit))
+
 }

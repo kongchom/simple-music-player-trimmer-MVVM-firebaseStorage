@@ -108,7 +108,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_60sdp"
         android:background="@drawable/d_core_border_music_play"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/imgPlay"

@@ -2,6 +2,8 @@ package g3.viewchoosephoto.di
 
 import android.app.Application
 import android.content.Context
+import android.media.MediaPlayer
+import android.provider.MediaStore
 import androidx.lifecycle.ViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,5 +27,11 @@ class AppModule constructor(
     @Singleton
     fun provideMusicRepository(): IMusicRepository {
         return LocalMusicRepository(applicationContext)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMediaPlayer(): MediaPlayer {
+        return MediaPlayer()
     }
 }

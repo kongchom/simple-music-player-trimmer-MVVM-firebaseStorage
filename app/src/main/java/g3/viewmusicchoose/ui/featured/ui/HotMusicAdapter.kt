@@ -1,5 +1,6 @@
 package g3.viewmusicchoose.ui.featured.ui
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,16 @@ import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.R
 import g3.viewmusicchoose.R.drawable.d_core_border_music_name_selected
 import kotlinx.android.synthetic.main.item_hot_music.view.*
+import lib.managerstorage.ManagerStorage
 import timber.log.Timber
+import java.lang.Exception
 
 
 class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
     RecyclerView.Adapter<HotMusicAdapter.HotMusicViewHolder>() {
 
     var onItemClick: ((Music, Int) -> Unit)? = null
+    var onDownloadClick: ((Music, Int) -> Unit)? = null
     var lastPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotMusicViewHolder =
@@ -53,6 +57,7 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
             }
         }
 
+        @SuppressLint("ResourceAsColor")
         fun bind(item: Music) {
             with(itemView) {
                 item_hot_music_duration.text = item.durationText
@@ -63,8 +68,11 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
                 } else {
                     View.VISIBLE
                 }
+                item_hot_music_download.setOnClickListener {
+                    onDownloadClick?.invoke(item, absoluteAdapterPosition)
+                }
                 if (item.isSelected) {
-                    item_hot_music_container.setBackgroundColor(d_core_border_music_name_selected)
+                    item_hot_music_container.setBackgroundColor(R.color.c_black_alpha_70)
                 } else {
                     item_hot_music_container.setBackgroundResource(R.color.c_333333)
                 }
@@ -83,6 +91,15 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
             hotMusicList[lastPosition].isSelected = false
         }
         lastPosition = position
+        notifyDataSetChanged()
+    }
+
+    fun downloadCurrentTrack(position: Int) {
+
+    }
+
+    fun setDownloadedItem(position: Int) {
+        hotMusicList[position].isDownloaded = true
         notifyDataSetChanged()
     }
 
