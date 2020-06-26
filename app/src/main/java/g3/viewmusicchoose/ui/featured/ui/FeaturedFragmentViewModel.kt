@@ -73,9 +73,4 @@ class FeaturedFragmentViewModel @Inject constructor(
         )
     }
 
-    fun switchPlayPauseState() {
-        isPlaying.value = !(isPlaying.value)!!
-        isPlaying.notifyObserver()
-    }
-
 }

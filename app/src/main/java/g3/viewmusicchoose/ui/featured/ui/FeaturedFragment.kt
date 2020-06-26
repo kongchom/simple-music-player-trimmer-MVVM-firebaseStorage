@@ -83,16 +83,6 @@ class FeaturedFragment : Fragment() {
             featured_fragment_hot_album_rv.adapter = HotAlbumAdapter(it)
             featured_fragment_hot_album_rv.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
         })
-        mViewModel.isPlaying.observe(requireActivity(), Observer { switch ->
-            if (mediaPlayer.isPlaying) {
-                mediaPlayer.pause()
-                playMusicButton.setImageDrawable(requireContext().getDrawable(R.drawable.icon_play_music))
-                Timber.d("congnm observe play pause")
-            } else {
-                mediaPlayer.start()
-                playMusicButton.setImageDrawable(requireContext().getDrawable(R.drawable.icon_pause))
-            }
-        })
     }
 
     private fun initView() {
@@ -109,10 +99,17 @@ class FeaturedFragment : Fragment() {
         }
         mediaPlayer = MediaPlayer.create(requireContext(),uri)
         mediaPlayer.start()
+        playMusicButton.setImageResource(R.drawable.icon_pause)
         Timber.d("congnm play music")
-        mViewModel.switchPlayPauseState()
         playMusicButton.setOnClickListener {
-            mViewModel.switchPlayPauseState()
+            if (mediaPlayer.isPlaying) {
+                mediaPlayer.pause()
+                playMusicButton.setImageResource(R.drawable.icon_play_music)
+                Timber.d("congnm observe play pause")
+            } else {
+                mediaPlayer.start()
+                playMusicButton.setImageResource(R.drawable.icon_pause)
+            }
         }
     }
 
