@@ -74,6 +74,7 @@ class LocalMusicRepository @Inject constructor(
         val localFile = File(audioPath)
         // If audio is exist, set flag download to true (don't needed re-download)
         if (localFile.exists()) {
+            Timber.d("congnm music is downloaded")
             music.isDownloaded = true
         }
     }

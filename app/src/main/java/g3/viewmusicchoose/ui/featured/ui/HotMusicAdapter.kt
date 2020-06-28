@@ -35,16 +35,16 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
             )
         }
 
-    override fun getItemCount(): Int = hotMusicList.size
+    override fun getItemCount(): Int = hotMusicList.size * 2
 
     override fun onBindViewHolder(holder: HotMusicViewHolder, position: Int) =
         when (holder.itemViewType) {
-            TYPE_NORMAL -> holder.bind(hotMusicList[position])
-            else -> holder.bindItemAds(hotMusicList[position])
+            TYPE_NORMAL -> holder.bind(hotMusicList[position % hotMusicList.size])
+            else -> holder.bindItemAds(hotMusicList[position % hotMusicList.size])
         }
 
     override fun getItemViewType(position: Int): Int =
-        when (position) {
+        when (position % hotMusicList.size) {
             1 -> TYPE_ADS
             else -> TYPE_NORMAL
         }
@@ -53,7 +53,7 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(hotMusicList[absoluteAdapterPosition],absoluteAdapterPosition)
+                onItemClick?.invoke(hotMusicList[absoluteAdapterPosition % hotMusicList.size],absoluteAdapterPosition % hotMusicList.size)
             }
         }
 
@@ -84,22 +84,16 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>) :
         }
     }
 
-    fun setItemSelected(position: Int) {
+    fun setItemSelected(position: Int, isDownloaded: Boolean) {
         Timber.d("congnm set item selected $position - $lastPosition")
         hotMusicList[position].isSelected = true
         if (lastPosition != -1 && lastPosition != position) {
             hotMusicList[lastPosition].isSelected = false
         }
         lastPosition = position
-        notifyDataSetChanged()
-    }
-
-    fun downloadCurrentTrack(position: Int) {
-
-    }
-
-    fun setDownloadedItem(position: Int) {
-        hotMusicList[position].isDownloaded = true
+        if (isDownloaded) {
+            hotMusicList[position].isDownloaded = true
+        }
         notifyDataSetChanged()
     }
 

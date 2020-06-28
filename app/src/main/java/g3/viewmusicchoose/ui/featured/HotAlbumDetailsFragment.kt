@@ -1,4 +1,4 @@
-package g3.viewmusicchoose.ui
+package g3.viewmusicchoose.ui.featured
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import g3.viewmusicchoose.R
 
-class MyMusicFragment : Fragment() {
+class HotAlbumDetailsFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,

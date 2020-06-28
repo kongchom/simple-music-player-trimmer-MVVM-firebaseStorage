@@ -5,44 +5,59 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/featured_fragment_tv_hot_album"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hot_album"
-        android:textColor="@color/colorAccent"
-        android:padding="@dimen/_8sdp"
-        android:textStyle="bold"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/hot_album_details_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/featured_fragment_hot_album_rv"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment_featured_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_13sdp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/featured_fragment_tv_hot_album"/>
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/featured_fragment_tv_hot_album"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hot_album"
+            android:textColor="@color/colorAccent"
+            android:padding="@dimen/_8sdp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/featured_fragment_tv_hot_music"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hot_music"
-        android:textColor="@color/colorAccent"
-        android:padding="@dimen/_8sdp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/featured_fragment_hot_album_rv" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/featured_fragment_hot_album_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/_13sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/featured_fragment_tv_hot_album"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/featured_fragment_hot_music_rv"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/featured_fragment_tv_hot_music" />
+        <TextView
+            android:id="@+id/featured_fragment_tv_hot_music"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/hot_music"
+            android:textColor="@color/colorAccent"
+            android:padding="@dimen/_8sdp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/featured_fragment_hot_album_rv" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/featured_fragment_hot_music_rv"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/featured_fragment_tv_hot_music" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
