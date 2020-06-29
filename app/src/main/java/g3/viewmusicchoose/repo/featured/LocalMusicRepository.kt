@@ -65,7 +65,9 @@ class LocalMusicRepository @Inject constructor(
         val musics: List<Music> =
         gSon.fromJson(str, MusicResponse::class.java).music
     val hotAlbumList: List<Album> = gSon.fromJson(str,MusicResponse::class.java).album
-        Timber.d("congnm hot album list audio ${hotAlbumList[0].getListAudio().size}")
+        for (i in 0 until hotAlbumList[0].getListAudio().size) {
+            Timber.d("congnm hot album list audio ${hotAlbumList[0].getListAudio()[i]?.name}")
+        }
     FunctionUtils.createFolder(GlobalDef.FOLDER_AUDIO)
     for (music in musics) {
         // Append with real local path

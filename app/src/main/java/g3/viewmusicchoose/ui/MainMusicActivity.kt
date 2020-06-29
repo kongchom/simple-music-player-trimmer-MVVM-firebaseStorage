@@ -1,12 +1,9 @@
 package g3.viewmusicchoose.ui
 
 import android.Manifest
-import android.app.Dialog
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -17,16 +14,13 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import g3.viewmusicchoose.*
+import g3.viewmusicchoose.ui.effects.EffectFragment
 import g3.viewmusicchoose.ui.featured.ui.FeaturedFragment
-import g3.viewmusicchoose.util.AppConstant
+import g3.viewmusicchoose.ui.mymusic.MyMusicFragment
 import g3.viewmusicchoose.util.AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
 import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
-import g3.viewmusicchoose.util.DialogUtil
-import g3.viewmusicchoose.util.DialogUtil.showDenyDialog
-import g3.viewmusicchoose.util.DialogUtil.showDialogConfirm
 import kotlinx.android.synthetic.main.activity_main_music.*
 import timber.log.Timber
-import java.lang.System.exit
 import javax.inject.Inject
 
 class MainMusicActivity : AppCompatActivity() {

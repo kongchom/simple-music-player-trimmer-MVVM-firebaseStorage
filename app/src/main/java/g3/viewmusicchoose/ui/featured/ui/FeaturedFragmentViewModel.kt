@@ -45,13 +45,11 @@ class FeaturedFragmentViewModel @Inject constructor(
     }
 
     private fun getHotAlbum() {
-        hotAlbumList.value?.clear()
         hotAlbumList.value?.addAll(RealmUtil.getInstance().getList(Album::class.java))
         hotAlbumList.notifyObserver()
     }
 
     private fun getHotMusic() {
-        hotMusicList.value?.clear()
         hotMusicList.value?.addAll(RealmUtil.getInstance().getList(Music::class.java))
         hotMusicList.notifyObserver()
     }
@@ -59,25 +57,30 @@ class FeaturedFragmentViewModel @Inject constructor(
     @SuppressLint("CheckResult")
     fun downloadCurrentTrack(name: String?, position: Int, onDone: (Boolean) -> Unit) {
         //Check internet connection
-        checkInternetConnectionUseCase.request().applyScheduler().subscribe({
+        checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isWifiConnected ->
             //If internet is available, request download file from firebase
-            val trackPath = GlobalDef.FOLDER_AUDIO + name
-            Timber.d(("congnm trackpath $trackPath"))
-            ManagerStorage.downloadFileToExternalStorage(
-                GlobalDef.PATH_DOWNLOAD_AUDIO + name,
-                GlobalDef.FOLDER_AUDIO,
-                name!!,
-                object: OnDownloadFileListener {
-                    override fun OnSuccessListener(file: File) {
-                        Timber.d("congnm download success ${file.absolutePath}")
-                        hotMusicList.value!![position].isDownloaded = true
-                        hotMusicList.notifyObserver()
-                        onDone.invoke(true)
+            if (isWifiConnected) {
+                val trackPath = GlobalDef.FOLDER_AUDIO + name
+                Timber.d(("congnm trackpath $trackPath"))
+                ManagerStorage.downloadFileToExternalStorage(
+                    GlobalDef.PATH_DOWNLOAD_AUDIO + name,
+                    GlobalDef.FOLDER_AUDIO,
+                    name!!,
+                    object: OnDownloadFileListener {
+                        override fun OnSuccessListener(file: File) {
+                            Timber.d("congnm download success ${file.absolutePath}")
+                            hotMusicList.value!![position].isDownloaded = true
+                            hotMusicList.notifyObserver()
+                            onDone.invoke(true)
+                        }
+                        override fun OnFailListener() {
+                            onDone.invoke(false)
+                        }
                     }
-                    override fun OnFailListener() {
-                    }
-                }
-            )
+                )
+            } else {
+                onDone.invoke(false)
+            }
         },{
             onDone.invoke(false)
         })

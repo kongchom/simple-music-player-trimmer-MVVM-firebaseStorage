@@ -28,10 +28,4 @@ class AppModule constructor(
     fun provideMusicRepository(): IMusicRepository {
         return LocalMusicRepository(applicationContext)
     }
-
-    @Provides
-    @Singleton
-    fun provideMediaPlayer(): MediaPlayer {
-        return MediaPlayer()
-    }
 }
