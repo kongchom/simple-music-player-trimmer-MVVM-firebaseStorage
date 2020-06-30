@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import g3.viewmusicchoose.ui.effects.EffectAlbum;
 import g3.viewmusicchoose.ui.featured.model.Album;
 
 public class MusicResponse extends BaseResponse {
@@ -28,6 +29,13 @@ public class MusicResponse extends BaseResponse {
         return null;
     }
 
+    public List<EffectAlbum> getEffects() {
+        if (data !=null) {
+            return data.getEffects();
+        }
+        return null;
+    }
+
     public void setData(MainData data) {
         this.data = data;
     }
@@ -39,6 +47,8 @@ public class MusicResponse extends BaseResponse {
         @SerializedName("list_album")
         private List<Album> albums;
 
+        @SerializedName("list_effects")
+        private List<EffectAlbum> effects;
 
         public List<Music> getAudios() {
             return audios;
@@ -48,11 +58,19 @@ public class MusicResponse extends BaseResponse {
             return albums;
         }
 
+        public List<EffectAlbum> getEffects() {
+            return effects;
+        }
+
         public void setAudios(List<Music> audios) {
             this.audios = audios;
         }
         public void setAlbums(List<Album> albums) {
             this.albums = albums;
+        }
+
+        public void setEffects(List<EffectAlbum> effects) {
+            this.effects = effects;
         }
     }
 }

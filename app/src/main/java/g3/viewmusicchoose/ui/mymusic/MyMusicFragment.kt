@@ -3,6 +3,7 @@ package g3.viewmusicchoose.ui.mymusic
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,11 +26,13 @@ class MyMusicFragment : Fragment() {
     lateinit var playMusicButton: ImageView
     lateinit var playMusicTrackTitle: TextView
     lateinit var activityTitle: TextView
+    lateinit var trimView: CustomTrimView
     lateinit var activityBackButton: ImageView
     lateinit var playMusicTrackDuration: TextView
     lateinit var myMysicRv: RecyclerView
     lateinit var myMysicRvAdapter: MyMusicAdapter
     lateinit var rvLayoutManager: LinearLayoutManager
+    var handler = Handler()
 
     lateinit var mediaPlayer: MyMediaPlayer
 
@@ -73,7 +76,33 @@ class MyMusicFragment : Fragment() {
             } else {
                 myMysicRvAdapter.setItemSelected(position, isDownloaded = false)
                 playMusicButton.setImageResource(R.drawable.icon_play_music)
-                mediaPlayer.pauseSound()
+                mediaPlayer.pauseSound(null)
+            }
+            trimView.setDuration(item.duration)
+            trimView.setOnTrimListener { start, end ->
+                Timber.d("congnm on trim listener start $start - end $end")
+                mediaPlayer.seekTo(start)
+                handler.postDelayed( {
+                    mediaPlayer.pauseSound(handler)
+                    playMusicButton.setImageResource(R.drawable.icon_play_music)
+                }, ((end - start) * 1000).toLong())
+            }
+            playMusicButton.setOnClickListener {
+                if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+                    mediaPlayer.pauseSound(null)
+                    playMusicButton.setImageResource(R.drawable.icon_play_music)
+                    Timber.d("congnm observe play")
+                } else {
+                    Timber.d("congnm on pause my music fragment")
+                    if (!mediaPlayer.checkNotNull()) {
+                        //after pause by handler, restart sound
+                        initPlayMusicView(item)
+                        playMusic(item)
+                    } else {
+                        mediaPlayer.restartSound()
+                    }
+                    playMusicButton.setImageResource(R.drawable.icon_pause)
+                }
             }
         }
     }
@@ -88,21 +117,12 @@ class MyMusicFragment : Fragment() {
         playMusicView.visibility = View.VISIBLE
         playMusicTrackTitle.text = item.songTitle
         playMusicTrackDuration.text = item.durationText
-        playMusicButton.setOnClickListener {
-            if (mediaPlayer.playingState) {
-                mediaPlayer.pauseSound()
-                playMusicButton.setImageResource(R.drawable.icon_play_music)
-                Timber.d("congnm observe play")
-            } else {
-                mediaPlayer.restartSound()
-                playMusicButton.setImageResource(R.drawable.icon_pause)
-            }
-        }
     }
 
     private fun initViews() {
         myMysicRv = requireView().findViewById(R.id.my_music_recycler_view)
         playMusicView = activity?.findViewById(R.id.music_activity_play_music_container)!!
+        trimView = activity?.findViewById(R.id.music_activity_trim_view)!!
         playMusicButton = activity?.findViewById(R.id.play_music_button)!!
         playMusicTrackTitle = activity?.findViewById(R.id.play_music_track_title)!!
         playMusicTrackDuration = activity?.findViewById(R.id.play_music_track_duration)!!

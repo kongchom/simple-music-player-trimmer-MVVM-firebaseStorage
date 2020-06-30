@@ -9,6 +9,23 @@
         android:id="@+id/effect_fragment_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_13sdp"
+        android:layout_marginStart="@dimen/_13sdp"
+        android:layout_marginBottom="@dimen/_13sdp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/effect_fragment_effect_details_rv"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/_13sdp"
+        android:layout_marginStart="@dimen/_13sdp"
+        android:layout_marginBottom="@dimen/_13sdp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

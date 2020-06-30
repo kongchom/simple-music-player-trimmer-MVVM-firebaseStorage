@@ -4,6 +4,9 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -27,7 +30,9 @@ class MainMusicActivity : AppCompatActivity() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-
+    lateinit var activityTitle: TextView
+    lateinit var activityBackButton: ImageView
+    lateinit var activityToolBar: LinearLayout
     @Inject
     lateinit var mViewModel: MainMusicViewModel
 
@@ -83,7 +88,15 @@ class MainMusicActivity : AppCompatActivity() {
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                super.onPageSelected(position)
+                when (position) {
+                    0 -> activityTitle.text = getString(R.string.activity_title)
+                    1 -> activityTitle.text = getString(R.string.activity_title)
+                    2 -> activityTitle.text = getString(R.string.activity_title)
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+                super.onPageScrollStateChanged(state)
             }
         })
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -104,6 +117,9 @@ class MainMusicActivity : AppCompatActivity() {
     private fun initViews() {
         viewPager = findViewById(R.id.music_activity_viewpager)
         tabLayout = findViewById(R.id.music_activity_tab_layout)
+        activityToolBar = findViewById(R.id.music_activity_tool_bar_container)
+        activityTitle = activityToolBar.findViewById(R.id.music_activity_title)
+        activityBackButton = activityToolBar.findViewById(R.id.music_activity_btn_back)
     }
 
     override fun onRequestPermissionsResult(

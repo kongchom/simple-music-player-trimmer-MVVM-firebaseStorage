@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Handler;
 
 import java.io.IOException;
 
@@ -89,15 +90,24 @@ public final class MyMediaPlayer {
         }
     }
 
-    public synchronized void pauseSound() {
+    public synchronized void pauseSound(Handler handler) {
         if (instance.mp != null) {
             instance.mp.pause();
+        }
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
         }
     }
 
     public synchronized void restartSound() {
         if (instance.mp != null) {
             instance.mp.start();
+        }
+    }
+
+    public synchronized void seekTo(Integer start) {
+        if (instance.mp != null) {
+            instance.mp.seekTo(start * 1000);
         }
     }
 

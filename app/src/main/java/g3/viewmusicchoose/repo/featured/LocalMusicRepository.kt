@@ -5,6 +5,7 @@ import android.net.wifi.SupplicantState
 import android.net.wifi.WifiManager
 import com.google.gson.Gson
 import g3.viewmusicchoose.*
+import g3.viewmusicchoose.ui.effects.EffectAlbum
 import g3.viewmusicchoose.ui.featured.model.Album
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -22,8 +23,9 @@ class LocalMusicRepository @Inject constructor(
 
     var cbData: (() -> Unit)? = null
 
-    override fun getRemoteAudio(): Single<List<LocalSong>> {
-        return Single.just(emptyList())
+    override fun getEffectAlbumList(): Single<List<EffectAlbum>> {
+        Timber.d("get effect data time ${System.currentTimeMillis()}")
+        return Single.just(RealmUtil.getInstance().getList(EffectAlbum::class.java))
     }
 
     override fun getAllFirebaseData(): Completable {
@@ -62,29 +64,47 @@ class LocalMusicRepository @Inject constructor(
 
     private fun saveData(str: String) {
         val gSon = Gson()
-        val musics: List<Music> =
-        gSon.fromJson(str, MusicResponse::class.java).music
-    val hotAlbumList: List<Album> = gSon.fromJson(str,MusicResponse::class.java).album
-        for (i in 0 until hotAlbumList[0].getListAudio().size) {
-            Timber.d("congnm hot album list audio ${hotAlbumList[0].getListAudio()[i]?.name}")
+        val musics: List<Music> = gSon.fromJson(str, MusicResponse::class.java).music
+        val hotAlbumList: List<Album> = gSon.fromJson(str, MusicResponse::class.java).album
+        val effectAlbumList: List<EffectAlbum> = gSon.fromJson(str, MusicResponse::class.java).effects
+        FunctionUtils.createFolder(GlobalDef.FOLDER_AUDIO)
+        for (music in musics) {
+            // Append with real local path
+            val audioPath = GlobalDef.FOLDER_AUDIO + music.audioFileName
+            Timber.d("congnm saveFileTolocal $audioPath")
+            val localFile = File(audioPath)
+            // If audio is exist, set flag download to true (don't needed re-download)
+            if (localFile.exists()) {
+                Timber.d("congnm music is downloaded")
+                music.isDownloaded = true
+            }
         }
-    FunctionUtils.createFolder(GlobalDef.FOLDER_AUDIO)
-    for (music in musics) {
-        // Append with real local path
-        val audioPath = GlobalDef.FOLDER_AUDIO + music.audioFileName
-        Timber.d("congnm saveFileTolocal $audioPath")
-        val localFile = File(audioPath)
-        // If audio is exist, set flag download to true (don't needed re-download)
-        if (localFile.exists()) {
-            Timber.d("congnm music is downloaded")
-            music.isDownloaded = true
-        }
-    }
-    // Set to list and Realm
-    saveAudioData(musics)
-    saveHotAlbum(hotAlbumList)
-
+        // Set to list and Realm
+        saveEffectAlbum(effectAlbumList)
+        Timber.d("save data time ${System.currentTimeMillis()}")
+        saveAudioData(musics)
+        saveHotAlbum(hotAlbumList)
 }
+
+    private fun saveEffectAlbum(effectAlbumList: List<EffectAlbum>) {
+        ThreadUtils.getInstance().runBackground(object : ThreadUtils.IBackground {
+            override fun doingBackground() {
+                val realm = Realm.getDefaultInstance()
+                realm.use { realm ->
+                    realm.beginTransaction()
+                    val eClassTheme =
+                        realm.where(EffectAlbum::class.java).findAll()
+                    eClassTheme.deleteAllFromRealm()
+                    realm.copyToRealmOrUpdate<EffectAlbum>(effectAlbumList)
+                    realm.commitTransaction()
+                }
+            }
+            override fun onCompleted() {
+                cbData?.invoke()
+            }
+            override fun onCancel() {}
+        })
+    }
 
     override fun isWifiConnected(): Single<Boolean> {
         val wifiMgr = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager

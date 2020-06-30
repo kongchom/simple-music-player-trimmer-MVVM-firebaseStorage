@@ -45,11 +45,13 @@ class FeaturedFragmentViewModel @Inject constructor(
     }
 
     private fun getHotAlbum() {
+        hotAlbumList.value?.clear()
         hotAlbumList.value?.addAll(RealmUtil.getInstance().getList(Album::class.java))
         hotAlbumList.notifyObserver()
     }
 
     private fun getHotMusic() {
+        hotMusicList.value?.clear()
         hotMusicList.value?.addAll(RealmUtil.getInstance().getList(Music::class.java))
         hotMusicList.notifyObserver()
     }
@@ -69,8 +71,6 @@ class FeaturedFragmentViewModel @Inject constructor(
                     object: OnDownloadFileListener {
                         override fun OnSuccessListener(file: File) {
                             Timber.d("congnm download success ${file.absolutePath}")
-                            hotMusicList.value!![position].isDownloaded = true
-                            hotMusicList.notifyObserver()
                             onDone.invoke(true)
                         }
                         override fun OnFailListener() {

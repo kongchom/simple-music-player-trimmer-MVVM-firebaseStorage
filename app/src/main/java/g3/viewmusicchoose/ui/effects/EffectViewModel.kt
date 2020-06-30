@@ -1,36 +1,46 @@
 package g3.viewmusicchoose.ui.effects
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import g3.viewmusicchoose.RealmUtil
 import g3.viewmusicchoose.repo.featured.GetLocalAudioDataUseCase
 import g3.viewmusicchoose.ui.featured.model.Album
+import g3.viewmusicchoose.util.applyScheduler
 import g3.viewmusicchoose.util.notifyObserver
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 class EffectViewModel @Inject constructor(
     private val getLocalAudioDataUseCase: GetLocalAudioDataUseCase
 ) : ViewModel() {
 
-    var hotAlbumList = MutableLiveData<MutableList<Album>>()
+    var effectAlbumList = MutableLiveData<MutableList<EffectAlbum>>()
+    var activityTitle = MutableLiveData<String>()
+    var needToggleBackButton: Boolean = false
 
     init {
-        hotAlbumList.value = ArrayList()
-    }
-
-    val cb = getLocalAudioDataUseCase.observeData {
-        Timber.d("congnm call back observe data")
+        Timber.d("init effect viewmodel")
+        activityTitle.value = ""
+        effectAlbumList.value = ArrayList()
         initData()
     }
 
-    fun initData() {
-        getHotAlbum()
+     fun initData() {
+        getEffectAlbumList()
     }
 
-    private fun getHotAlbum() {
-        hotAlbumList.value?.addAll(RealmUtil.getInstance().getList(Album::class.java))
-        hotAlbumList.notifyObserver()
-    }
+    @SuppressLint("CheckResult")
+    private fun getEffectAlbumList() {
+        getLocalAudioDataUseCase.getListEffectAlbum().applyScheduler().subscribe({
+            Timber.d("get effect viewmodel data time ${System.currentTimeMillis()}")
+            effectAlbumList.value?.clear()
+            effectAlbumList.value?.addAll(it)
+            effectAlbumList.notifyObserver()
+        },{
 
+        })
+
+    }
 }
