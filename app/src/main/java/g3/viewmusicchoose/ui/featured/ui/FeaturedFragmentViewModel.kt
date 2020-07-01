@@ -1,16 +1,14 @@
 package g3.viewmusicchoose.ui.featured.ui
 
 import android.annotation.SuppressLint
-import android.provider.Settings
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import g3.viewmusicchoose.GlobalDef
 import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.RealmUtil
-import g3.viewmusicchoose.repo.featured.CheckInternetConnectionUseCase
+import g3.viewmusicchoose.repo.CheckInternetConnectionUseCase
 import g3.viewmusicchoose.repo.featured.GetLocalAudioDataUseCase
 import g3.viewmusicchoose.ui.featured.model.Album
-import g3.viewmusicchoose.ui.featured.model.DownloadAudioFromFirebaseUseCase
 import g3.viewmusicchoose.util.applyScheduler
 import g3.viewmusicchoose.util.notifyObserver
 import lib.managerstorage.ManagerStorage

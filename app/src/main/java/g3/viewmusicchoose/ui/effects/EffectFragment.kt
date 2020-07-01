@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import g3.viewmusicchoose.*
 import g3.viewmusicchoose.ui.featured.ui.FeaturedFragmentViewModel
 import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
@@ -37,10 +38,11 @@ class EffectFragment : Fragment() {
     lateinit var rvLayoutManager: LinearLayoutManager
     lateinit var mediaPlayer: MyMediaPlayer
     lateinit var trimView: CustomTrimView
+    lateinit var str: String
     var handler = Handler()
 
+    @Inject
     lateinit var mViewModel: EffectViewModel
-    @Inject set
 
     @Inject
     lateinit var featuredFragmentViewModel: FeaturedFragmentViewModel
@@ -50,6 +52,7 @@ class EffectFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         return inflater.inflate(R.layout.fragment_effect,container,false)
     }
 
@@ -58,63 +61,33 @@ class EffectFragment : Fragment() {
         initViews()
         MusicApplication.instance.appComponent.inject(this)
         mediaPlayer = MyMediaPlayer.getInstance(requireContext())
-        //observe list album
-        mViewModel.effectAlbumList.observe(requireActivity(), Observer {
-            //effect album rv
-            Timber.d("congnm observe effect album effect fragment")
-            effectRvAdapter = EffectAlbumAdapter(it)
+        mViewModel.effectAlbumList.observe(viewLifecycleOwner, Observer {
 
+            effectRvAdapter = EffectAlbumAdapter(RealmUtil.getInstance().getList(EffectAlbum::class.java))
             effectRecyclerView.adapter = effectRvAdapter
             effectRecyclerView.layoutManager = GridLayoutManager(requireContext(),3,GridLayoutManager.VERTICAL,false)
 
             //effect details rv
             effectRvAdapter.onItemClick = { item, position ->
-                effectRecyclerView.visibility = View.GONE
-                effectDetailsRecyclerView.visibility = View.VISIBLE
-                activityTitle.text = item.getName()
+                initAdapterView(item)
 
+                Timber.d("congnm observe data effect album detail ${item.getName()} ")
+                Timber.d("congnm observe data effect album detail ${item.getNumOfTrack()} ")
+                Timber.d("congnm observe data effect album detail ${item.getListAudio().size} ")
                 effectDetailRvAdapter = HotMusicAdapter(item.getListAudio(),false)
                 effectDetailsRecyclerView.adapter = effectDetailRvAdapter
                 effectDetailsRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
 
                 effectDetailRvAdapter.onItemClick = { item, position ->
-                    initPlayMusicView(item)
-                    if (item.isDownloaded && position != effectDetailRvAdapter.lastPosition) {
+                    if (item.isDownloaded) {
                         effectDetailRvAdapter.setItemSelected(position, isDownloaded = true)
-                        //init play music view + play music
-                        mediaPlayer.playSound(item.audioFileName, null)
-                        playMusicButton.setImageResource(R.drawable.icon_pause)
                     } else {
+                        pauseCurrentTrack()
                         effectDetailRvAdapter.setItemSelected(position, isDownloaded = false)
-                        playMusicButton.setImageResource(R.drawable.icon_play_music)
-                        mediaPlayer.pauseSound(null)
                     }
-                    trimView.setDuration(item.duration)
-                    trimView.setOnTrimListener { start, end ->
-                        Timber.d("congnm on trim listener start $start - end $end")
-                        mediaPlayer.seekTo(start)
-                        handler.postDelayed( {
-                            mediaPlayer.pauseSound(handler)
-                            playMusicButton.setImageResource(R.drawable.icon_play_music)
-                        },((end - start) * 1000).toLong())
-                    }
-                    playMusicButton.setOnClickListener {
-                        if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
-                            mediaPlayer.pauseSound(null)
-                            playMusicButton.setImageResource(R.drawable.icon_play_music)
-                            Timber.d("congnm observe play")
-                        } else {
-                            Timber.d("congnm observe pause")
-                            if (!item.isDownloaded) {
-                                Toast.makeText(context, R.string.please_download_before_playing,
-                                    Toast.LENGTH_LONG).show()
-                            } else {
-                                Timber.d("congnm on pause featured fragment")
-                                mediaPlayer.restartSound()
-                                playMusicButton.setImageResource(R.drawable.icon_pause)
-                            }
-                        }
-                    }
+                    initPlayMusicView(item)
+                    handleTrim(item)
+                    handlePlayPause(item)
                 }
 
                 effectDetailRvAdapter.onDownloadClick = { item, position ->
@@ -131,15 +104,58 @@ class EffectFragment : Fragment() {
                         }
                     }
                 }
-
-                activityBackButton.setOnClickListener {
-                    activityTitle.text = getString(R.string.activity_title)
-                    effectRecyclerView.visibility = View.VISIBLE
-                    effectDetailsRecyclerView.visibility = View.GONE
-                }
             }
         })
 
+    }
+
+    private fun initAdapterView(item: EffectAlbum) {
+        effectRecyclerView.visibility = View.GONE
+        effectDetailsRecyclerView.visibility = View.VISIBLE
+        activityTitle.text = item.getName()
+        activityBackButton.setOnClickListener {
+            activityTitle.text = getString(R.string.activity_title)
+            effectRecyclerView.visibility = View.VISIBLE
+            effectDetailsRecyclerView.visibility = View.GONE
+        }
+    }
+
+    private fun pauseCurrentTrack() {
+        if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+            mediaPlayer.pauseSound(null)
+            playMusicButton.setImageResource(R.drawable.icon_play_music)
+        }
+    }
+
+    private fun handlePlayPause(item: Music) {
+        playMusicButton.setOnClickListener {
+            if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+                mediaPlayer.pauseSound(null)
+                playMusicButton.setImageResource(R.drawable.icon_play_music)
+                Timber.d("congnm observe play")
+            } else {
+                Timber.d("congnm observe pause")
+                if (!item.isDownloaded) {
+                    Toast.makeText(context, R.string.please_download_before_playing,Toast.LENGTH_LONG).show()
+                } else {
+                    Timber.d("congnm on pause featured fragment")
+                    mediaPlayer.playSound(item.audioFileName,null)
+                    playMusicButton.setImageResource(R.drawable.icon_pause)
+                }
+            }
+        }
+    }
+
+    private fun handleTrim(item: Music) {
+        trimView.setDuration(item.duration)
+        trimView.setOnTrimListener { start, end ->
+            Timber.d("congnm on trim listener start $start - end $end")
+            mediaPlayer.seekTo(start)
+            handler.postDelayed( {
+                mediaPlayer.pauseSound(handler)
+                playMusicButton.setImageResource(R.drawable.icon_play_music)
+            },((end - start) * 1000).toLong())
+        }
     }
 
     private fun initViews() {
@@ -158,10 +174,5 @@ class EffectFragment : Fragment() {
         playMusicView.visibility = View.VISIBLE
         playMusicTrackTitle.text = item.name
         playMusicTrackDuration.text = item.durationText
-    }
-
-    override fun onResume() {
-        mViewModel.initData()
-        super.onResume()
     }
 }

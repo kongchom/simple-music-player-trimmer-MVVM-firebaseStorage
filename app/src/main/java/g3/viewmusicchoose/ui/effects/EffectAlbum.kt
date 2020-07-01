@@ -7,6 +7,7 @@ import g3.viewmusicchoose.Music
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
+import io.realm.internal.KeepMember
 import java.io.File
 
 open class EffectAlbum: RealmObject() {

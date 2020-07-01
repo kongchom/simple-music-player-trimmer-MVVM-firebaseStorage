@@ -1,5 +1,6 @@
-package g3.viewmusicchoose.repo.featured
+package g3.viewmusicchoose.repo
 
+import g3.viewmusicchoose.repo.featured.IMusicRepository
 import io.reactivex.Single
 import javax.inject.Inject
 

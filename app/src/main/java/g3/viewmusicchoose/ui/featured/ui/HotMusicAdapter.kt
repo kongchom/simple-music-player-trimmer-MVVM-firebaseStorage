@@ -7,12 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.R
-import g3.viewmusicchoose.R.drawable.d_core_border_music_name_selected
 import kotlinx.android.synthetic.main.item_hot_music.view.*
-import lib.managerstorage.ManagerStorage
 import timber.log.Timber
-import java.lang.Exception
-
 
 class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private var isContainAds: Boolean) :
     RecyclerView.Adapter<HotMusicAdapter.HotMusicViewHolder>() {
@@ -69,31 +65,31 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
                 } else if (absoluteAdapterPosition == 1 && isContainAds) {
                     return@setOnClickListener
                 } else {
-                        onItemClick?.invoke(hotMusicList[absoluteAdapterPosition % hotMusicList.size],absoluteAdapterPosition % hotMusicList.size)
-                    }
+                    onItemClick?.invoke(hotMusicList[absoluteAdapterPosition % hotMusicList.size],absoluteAdapterPosition % hotMusicList.size)
                 }
             }
+        }
 
         @SuppressLint("ResourceAsColor")
         fun bind(item: Music) {
             with(itemView) {
 //                    Timber.d("congnm absolute adapter position $absoluteAdapterPosition")
-                    item_hot_music_duration.text = item.durationText
-                    item_hot_music_name.text = item.name
-                    iv_disk.setImageResource(R.drawable.default_music_picture)
-                    item_hot_music_download.visibility = if (!item.isSelected || item.isDownloaded) {
-                        View.GONE
-                    } else {
-                        View.VISIBLE
-                    }
-                    item_hot_music_download.setOnClickListener {
-                        onDownloadClick?.invoke(item, absoluteAdapterPosition)
-                    }
-                    if (item.isSelected) {
-                        item_hot_music_container.setBackgroundColor(R.color.c_black_alpha_70)
-                    } else {
-                        item_hot_music_container.setBackgroundResource(R.color.c_333333)
-                    }
+                item_hot_music_duration.text = item.durationText
+                item_hot_music_name.text = item.name
+                iv_disk.setImageResource(R.drawable.default_music_picture)
+                item_hot_music_download.visibility = if (!item.isSelected || item.isDownloaded) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+                item_hot_music_download.setOnClickListener {
+                    onDownloadClick?.invoke(item, absoluteAdapterPosition)
+                }
+                if (item.isSelected) {
+                    item_hot_music_container.setBackgroundColor(R.color.c_black_alpha_70)
+                } else {
+                    item_hot_music_container.setBackgroundResource(R.color.c_333333)
+                }
             }
         }
 

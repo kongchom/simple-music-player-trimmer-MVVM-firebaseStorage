@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import g3.viewmusicchoose.GlobalDef
 import g3.viewmusicchoose.Music
-import g3.viewmusicchoose.RealmUtil
 import g3.viewmusicchoose.SharePrefUtils
-import g3.viewmusicchoose.repo.featured.CheckInternetConnectionUseCase
+import g3.viewmusicchoose.repo.CheckInternetConnectionUseCase
 import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.ui.featured.model.DownloadAudioFromFirebaseUseCase
 import g3.viewmusicchoose.util.applyScheduler

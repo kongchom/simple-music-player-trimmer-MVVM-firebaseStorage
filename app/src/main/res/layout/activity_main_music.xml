@@ -116,7 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_120sdp"
         app:layout_constraintBottom_toBottomOf="@+id/music_activity_viewpager_container"
-        android:visibility="visible"
+        android:visibility="gone"
         android:background="@color/c_black_alpha_70"
         android:alpha="0.95"
         app:layout_constraintEnd_toEndOf="parent"
