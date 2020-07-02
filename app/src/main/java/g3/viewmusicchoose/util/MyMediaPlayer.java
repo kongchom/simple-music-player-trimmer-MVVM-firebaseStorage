@@ -80,13 +80,14 @@ public final class MyMediaPlayer {
     }
 
     public synchronized Boolean checkNotNull() {
-        return instance.mp != null;
+        return (instance.mp != null);
     }
 
     public synchronized void stopSound() {
         if (instance.mp != null) {
             instance.mp.stop();
             instance.mp.release();
+            instance.mp = null;
         }
     }
 

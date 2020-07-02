@@ -15,7 +15,7 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
 
     var onItemClick: ((Music, Int) -> Unit)? = null
     var onDownloadClick: ((Music, Int) -> Unit)? = null
-    var lastPosition: Int = 0
+    var lastPosition: Int = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HotMusicViewHolder =
         when (viewType) {
@@ -77,7 +77,7 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
                 item_hot_music_duration.text = item.durationText
                 item_hot_music_name.text = item.name
                 iv_disk.setImageResource(R.drawable.default_music_picture)
-                item_hot_music_download.visibility = if (!item.isSelected || item.isDownloaded) {
+                item_hot_music_download.visibility = if (item.isDownloaded) {
                     View.GONE
                 } else {
                     View.VISIBLE
@@ -98,16 +98,18 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
         }
     }
 
-    fun setItemSelected(position: Int, isDownloaded: Boolean) {
+    fun setItemSelected(position: Int) {
         Timber.d("congnm set item selected $position - $lastPosition")
         hotMusicList[position].isSelected = true
         if (lastPosition != -1 && lastPosition != position) {
             hotMusicList[lastPosition].isSelected = false
         }
         lastPosition = position
-        if (isDownloaded) {
-            hotMusicList[position].isDownloaded = true
-        }
+        notifyDataSetChanged()
+    }
+
+    fun setItemDownloaded(position: Int) {
+        hotMusicList[position].isDownloaded = true
         notifyDataSetChanged()
     }
 

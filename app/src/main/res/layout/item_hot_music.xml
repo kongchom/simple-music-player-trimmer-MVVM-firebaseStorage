@@ -75,6 +75,6 @@
         android:layout_marginEnd="@dimen/_10sdp"
         android:padding="6dp"
         android:src="@drawable/icon_download"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

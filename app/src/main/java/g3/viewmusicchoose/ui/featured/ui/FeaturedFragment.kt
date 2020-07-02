@@ -87,33 +87,46 @@ class FeaturedFragment : Fragment() {
                     }
                 }
             })
-
+            /**
+             * Handle on hot music item click
+             */
             hotMusicAdapter.onItemClick = { item, position ->
-                if (item.isDownloaded) {
-                    playSelectedTrack(item)
-                    hotMusicAdapter.setItemSelected(position, isDownloaded = true)
-                } else {
-                    pauseCurrentTrack()
-                    hotMusicAdapter.setItemSelected(position, isDownloaded = false)
-                }
+                //Set play view = visible, set data for play music view
                 initPlayMusicView(item)
+                //check is same track?
+                if (position != hotMusicAdapter.lastPosition) {
+                    //Set item is selected
+                    hotMusicAdapter.setItemSelected(position)
+                    //If any current track playing -> stop
+                    if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+                        mediaPlayer.stopSound()
+                    }
+                    //Check file is downloaded?
+                    if (item.isDownloaded) {
+                        Timber.d("congnm play file featured fragment")
+                        playSelectedTrack(item)
+                    } else {
+                        //in case item is not downloaded yet
+                        //download file
+                        mViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
+                            if (downloadSucceed) {
+                                //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
+                                playSelectedTrack(item)
+                                Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
+                                hotMusicAdapter.setItemDownloaded(position)
+                            } else {
+                                //in case download fail: show toast
+                                Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
+                            }
+                        }
+                    }
+                } else {
+                    //in case is same track = true
+                    //do nothing
+                }
+                //listener for play pause button and trim view
                 handlePlayPause(item)
                 handleTrim(item)
-            }
-
-            hotMusicAdapter.onDownloadClick = { item, position ->
-                mViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
-                    if (downloadSucceed) {
-                        hotMusicAdapter.setItemSelected(position, isDownloaded = true)
-                        //init play music view + play music
-                        Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
-                        mediaPlayer.playSound(item.audioFileName, null)
-                        playMusicButton.setImageResource(R.drawable.icon_pause)
-                    } else {
-                        hotMusicAdapter.setItemSelected(position, isDownloaded = false)
-                        Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
-                    }
-                }
             }
         })
 
@@ -131,29 +144,21 @@ class FeaturedFragment : Fragment() {
                 hotAlbumItemAdapter.onItemClick = { item, position ->
                     if (item.isDownloaded) {
                         playSelectedTrack(item)
-                        hotAlbumItemAdapter.setItemSelected(position, isDownloaded = true)
+                        hotAlbumItemAdapter.setItemSelected(position)
                     } else {
-                        pauseCurrentTrack()
-                        hotAlbumItemAdapter.setItemSelected(position, isDownloaded = false)
+                        mViewModel.downloadCurrentTrack(item.audioFileName, position) { downloadSucceed ->
+                            if (downloadSucceed) {
+                                Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
+                                mediaPlayer.playSound(item.audioFileName, null)
+                            } else {
+                                Toast.makeText(context,R.string.download_fail,Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                        hotAlbumItemAdapter.setItemSelected(position)
                     }
                     initPlayMusicView(item)
                     handlePlayPause(item)
                     handleTrim(item)
-                }
-
-                hotAlbumItemAdapter.onDownloadClick = { item, position ->
-                    mViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
-                        if (downloadSucceed) {
-                            hotAlbumItemAdapter.setItemSelected(position, isDownloaded = true)
-                            //init play music view + play music
-                            Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
-                            mediaPlayer.playSound(item.audioFileName, null)
-                            playMusicButton.setImageResource(R.drawable.icon_pause)
-                        } else {
-                            hotAlbumItemAdapter.setItemSelected(position, isDownloaded = false)
-                            Toast.makeText(context,R.string.download_fail,Toast.LENGTH_SHORT).show()
-                        }
-                    }
                 }
 
                 hot_album_details_rv.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
@@ -172,8 +177,15 @@ class FeaturedFragment : Fragment() {
     }
 
     private fun playSelectedTrack(item: Music) {
-        mediaPlayer.playSound(item.audioFileName,null)
+        mediaPlayer.playSound(item.audioFileName, null)
         playMusicButton.setImageResource(R.drawable.icon_pause)
+    }
+
+    private fun pauseCurrentTrack() {
+        if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+            mediaPlayer.pauseSound(null)
+            playMusicButton.setImageResource(R.drawable.icon_play_music)
+        }
     }
 
     private fun initAlbumDetailsView(item: Album) {
@@ -185,13 +197,6 @@ class FeaturedFragment : Fragment() {
             activityTitle.text = getString(R.string.activity_title)
             fragment_featured_container.visibility = View.VISIBLE
             hot_album_details_rv.visibility = View.GONE
-        }
-    }
-
-    private fun pauseCurrentTrack() {
-        if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
-            mediaPlayer.pauseSound(null)
-            playMusicButton.setImageResource(R.drawable.icon_play_music)
         }
     }
 
@@ -258,10 +263,10 @@ class FeaturedFragment : Fragment() {
     }
 
     override fun onDestroy() {
+        Timber.d("congnm on destroy view featured fragment")
         mediaPlayer.stopSound()
         super.onDestroy()
     }
-
 
     interface OnClickHotAlbumListener {
         fun onClickHotAlbum()

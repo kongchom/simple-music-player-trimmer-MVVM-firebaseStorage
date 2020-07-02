@@ -72,55 +72,44 @@ class MyMusicFragment : Fragment() {
 
     private fun initListener() {
         myMysicRvAdapter.onItemClick = { item, position ->
-            initPlayMusicView(item)
-            playMusic(item)
-            if (position != myMysicRvAdapter.lastPosition) {
-                myMysicRvAdapter.setItemSelected(position, isDownloaded = true)
-                //init play music view + play music
+            myMysicRvAdapter.setItemSelected(position,isDownloaded = false)
+            if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+                mediaPlayer.stopSound()
+                playSelectedTrack(item)
             } else {
-                myMysicRvAdapter.setItemSelected(position, isDownloaded = false)
-                playMusicButton.setImageResource(R.drawable.icon_play_music)
-                mediaPlayer.pauseSound(null)
+                playSelectedTrack(item)
             }
-            trimView.setDuration(item.duration)
-            trimView.setOnTrimListener { start, end ->
-                Timber.d("congnm on trim listener start $start - end $end")
-                mediaPlayer.seekTo(start)
-                handler.postDelayed( {
-                    mediaPlayer.pauseSound(handler)
-                    playMusicButton.setImageResource(R.drawable.icon_play_music)
-                }, ((end - start) * 1000).toLong())
-            }
-            playMusicButton.setOnClickListener {
-                if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
-                    mediaPlayer.pauseSound(null)
-                    playMusicButton.setImageResource(R.drawable.icon_play_music)
-                    Timber.d("congnm observe play")
-                } else {
-                    Timber.d("congnm on pause my music fragment")
-                    if (!mediaPlayer.checkNotNull()) {
-                        //after pause by handler, restart sound
-                        initPlayMusicView(item)
-                        playMusic(item)
-                    } else {
-                        mediaPlayer.restartSound()
-                    }
-                    playMusicButton.setImageResource(R.drawable.icon_pause)
-                }
-            }
+            initPlayMusicView(item)
+            handlePlayPause(item)
+            handleTrim(item)
         }
     }
 
-    private fun playMusic(item: LocalSong) {
-        mediaPlayer.playSound("",item.songData)
+    private fun playSelectedTrack(item: LocalSong) {
+        if (mediaPlayer.checkNotNull()) {
+            mediaPlayer.restartSound()
+        } else {
+            mediaPlayer.playSound("",item.songData)
+        }
         playMusicButton.setImageResource(R.drawable.icon_pause)
-        Timber.d("congnm play music")
     }
 
     private fun initPlayMusicView(item: LocalSong) {
         playMusicView.visibility = View.VISIBLE
         playMusicTrackTitle.text = item.songTitle
         playMusicTrackDuration.text = item.durationText
+    }
+
+    private fun handlePlayPause(item: LocalSong) {
+        playMusicButton.setOnClickListener {
+            if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
+                mediaPlayer.pauseSound(null)
+                playMusicButton.setImageResource(R.drawable.icon_play_music)
+            } else {
+                mediaPlayer.playSound("", item.songData)
+                playMusicButton.setImageResource(R.drawable.icon_pause)
+            }
+        }
     }
 
     private fun initViews() {
@@ -132,6 +121,18 @@ class MyMusicFragment : Fragment() {
         playMusicTrackDuration = activity?.findViewById(R.id.play_music_track_duration)!!
         activityTitle = activity?.findViewById(R.id.music_activity_title)!!
         activityBackButton = activity?.findViewById(R.id.music_activity_btn_back)!!
+    }
+
+    private fun handleTrim(item: LocalSong) {
+        trimView.setDuration(item.duration)
+        trimView.setOnTrimListener { start, end ->
+            Timber.d("congnm on trim listener start $start - end $end")
+            mediaPlayer.seekTo(start)
+            handler.postDelayed( {
+                mediaPlayer.pauseSound(handler)
+                playMusicButton.setImageResource(R.drawable.icon_play_music)
+            },((end - start) * 1000).toLong())
+        }
     }
 
     companion object {

@@ -24,7 +24,6 @@ import javax.inject.Inject
 
 class EffectFragment : Fragment() {
 
-
     lateinit var playMusicView: View
     lateinit var btnDownload: View
     lateinit var playMusicButton: ImageView
@@ -83,10 +82,10 @@ class EffectFragment : Fragment() {
                 effectDetailRvAdapter.onItemClick = { item, position ->
                     if (item.isDownloaded) {
                         playSelectedTrack(item)
-                        effectDetailRvAdapter.setItemSelected(position, isDownloaded = true)
+                        effectDetailRvAdapter.setItemSelected(position)
                     } else {
                         pauseCurrentTrack()
-                        effectDetailRvAdapter.setItemSelected(position, isDownloaded = false)
+                        effectDetailRvAdapter.setItemSelected(position)
                     }
                     initPlayMusicView(item)
                     handleTrim(item)
@@ -94,18 +93,19 @@ class EffectFragment : Fragment() {
                 }
 
                 effectDetailRvAdapter.onDownloadClick = { item, position ->
+                    Timber.d("congnm on set item download click position $position")
                     mProgressDialog.show(requireContext())
                     featuredFragmentViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
                         if (downloadSucceed) {
                             mProgressDialog.dismiss()
-                            effectDetailRvAdapter.setItemSelected(position, isDownloaded = true)
+                            effectDetailRvAdapter.setItemSelected(position)
                             //init play music view + play music
                             Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
                             mediaPlayer.playSound(item.audioFileName, null)
                             playMusicButton.setImageResource(R.drawable.icon_pause)
                         } else {
                             mProgressDialog.dismiss()
-                            effectDetailRvAdapter.setItemSelected(position, isDownloaded = false)
+                            effectDetailRvAdapter.setItemSelected(position)
                             Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
                         }
                     }
@@ -116,6 +116,9 @@ class EffectFragment : Fragment() {
     }
 
     private fun playSelectedTrack(item: Music) {
+        if (mediaPlayer.checkNotNull()) {
+            mediaPlayer.restartSound()
+        }
         mediaPlayer.playSound(item.audioFileName,null)
         playMusicButton.setImageResource(R.drawable.icon_pause)
     }
