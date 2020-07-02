@@ -79,6 +79,18 @@ class LocalMusicRepository @Inject constructor(
                 music.isDownloaded = true
             }
         }
+        for (album in hotAlbumList) {
+            for (i in 0 until album.getListAudio().size.minus(1))
+            if (File(GlobalDef.FOLDER_AUDIO + album.getListAudio()[i]!!.audioFileName).exists()) {
+                album.getListAudio()[i]!!.isDownloaded = true
+            }
+        }
+        for (effectAlbum in effectAlbumList) {
+            for (i in 0 until effectAlbum.getListEffectAudio().size.minus(1))
+                if (File(GlobalDef.FOLDER_AUDIO + effectAlbum.getListEffectAudio()[i]!!.audioFileName).exists()) {
+                    effectAlbum.getListEffectAudio()[i]!!.isDownloaded = true
+                }
+        }
         // Set to list and Realm
         saveEffectAlbum(effectAlbumList)
         Timber.d("save data time ${System.currentTimeMillis()}")

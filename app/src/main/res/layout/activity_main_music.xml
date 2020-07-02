@@ -30,7 +30,7 @@
             android:id="@+id/music_activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/music_activity_title"
+            android:text="@string/activity_title"
             android:textSize="@dimen/_16ssp"
             android:textStyle="bold"
             android:textColor="@color/colorAccent"
@@ -114,7 +114,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/music_activity_play_music_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_120sdp"
+        android:layout_height="@dimen/_96sdp"
         app:layout_constraintBottom_toBottomOf="@+id/music_activity_viewpager_container"
         android:visibility="gone"
         android:background="@color/c_black_alpha_70"
@@ -125,7 +125,7 @@
         <g3.viewmusicchoose.CustomTrimView
             android:id="@+id/music_activity_trim_view"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_63sdp"
+            android:layout_height="@dimen/_50sdp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -141,7 +141,6 @@
             android:background="@color/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-
         <ImageView
             android:id="@+id/play_music_button"
             android:layout_width="@dimen/_37sdp"
@@ -155,16 +154,17 @@
 
         <TextView
             android:id="@+id/play_music_track_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="When I Was Your Man"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            tools:text="When I Was Your Man In The Summer I feel like"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
             android:padding="@dimen/_1sdp"
-            app:layout_constraintStart_toEndOf="@id/play_music_button"
             android:layout_marginStart="@dimen/_9sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/play_music_button"
+            app:layout_constraintEnd_toStartOf="@id/music_activity_btn_add_container"
             app:layout_constraintTop_toTopOf="@id/play_music_button"
+            app:layout_constraintBottom_toTopOf="@id/play_music_track_duration"
             app:layout_constraintVertical_bias="0"/>
 
         <TextView
@@ -182,20 +182,22 @@
             app:layout_constraintVertical_bias="1"/>
 
         <androidx.cardview.widget.CardView
-            android:layout_width="@dimen/_65sdp"
-            android:layout_height="@dimen/_28sdp"
+            android:id="@+id/music_activity_btn_add_container"
+            android:layout_width="@dimen/_52sdp"
+            android:layout_height="@dimen/_23sdp"
             app:cardCornerRadius="@dimen/_4sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.95"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/music_activity_trim_view"
-            app:layout_constraintHorizontal_bias="0.95">
+            app:layout_constraintTop_toBottomOf="@+id/music_activity_trim_view">
 
             <ImageView
+                android:id="@+id/music_activity_btn_add"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/button_add"
-                android:scaleType="centerCrop"/>
+                android:scaleType="centerCrop" />
 
         </androidx.cardview.widget.CardView>
 

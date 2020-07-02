@@ -3,6 +3,7 @@ package g3.viewmusicchoose.ui
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.text.BoringLayout
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -23,6 +24,8 @@ import g3.viewmusicchoose.ui.mymusic.MyMusicFragment
 import g3.viewmusicchoose.util.AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
 import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
 import kotlinx.android.synthetic.main.activity_main_music.*
+import kotlinx.android.synthetic.main.fragment_effect.*
+import kotlinx.android.synthetic.main.fragment_featured.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,6 +38,26 @@ class MainMusicActivity : AppCompatActivity() {
     lateinit var activityToolBar: LinearLayout
     @Inject
     lateinit var mViewModel: MainMusicViewModel
+    lateinit var mProgressDialog: CustomProgressBar
+    var isInHotAlbum: Boolean = false
+    var isInEffectAlbum: Boolean = false
+
+    var listener = object: HandleOnActivity {
+        override fun onClickAddButton(
+            name: String,
+            duration: Int,
+            path: String,
+            startTime: Int,
+            endTime: Int
+        ) {
+
+        }
+
+        override fun onActivityBackPressed(isInHotAlbum: Boolean, isInEffectAlbum: Boolean) {
+            this@MainMusicActivity.isInHotAlbum = isInHotAlbum
+            this@MainMusicActivity.isInEffectAlbum = isInEffectAlbum
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +65,12 @@ class MainMusicActivity : AppCompatActivity() {
         MusicApplication.instance.appComponent.inject(this)
         initViews()
         requestWriteStoragePermission()
+        observeData()
+        initViewPager()
+        initListeners()
+    }
+
+    private fun observeData() {
         mViewModel.isShowErrorScreen.observe(this, Observer { needToShowErrorScreen ->
             if (needToShowErrorScreen) {
                 Timber.d("congnm show error true")
@@ -51,8 +80,14 @@ class MainMusicActivity : AppCompatActivity() {
                 network_error_view_container.visibility = View.GONE
             }
         })
-        initViewPager()
-        initListeners()
+        mViewModel.showProgressDialog.observe(this, Observer { isShowDialog ->
+            if (isShowDialog) {
+                Timber.d("congnm show progress dialog")
+                mProgressDialog.show(this)
+            } else {
+                mProgressDialog.dismiss()
+            }
+        })
     }
 
     private fun initListeners() {
@@ -78,9 +113,9 @@ class MainMusicActivity : AppCompatActivity() {
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
-                    0 -> FeaturedFragment()
-                    1 -> MyMusicFragment()
-                    2 -> EffectFragment()
+                    0 -> FeaturedFragment.newInstance(this@MainMusicActivity, listener)
+                    1 -> MyMusicFragment.newInstance(this@MainMusicActivity, listener)
+                    2 -> EffectFragment.newInstance(this@MainMusicActivity, listener)
                     else -> FeaturedFragment()
                 }
             }
@@ -93,10 +128,6 @@ class MainMusicActivity : AppCompatActivity() {
                     1 -> activityTitle.text = getString(R.string.activity_title)
                     2 -> activityTitle.text = getString(R.string.activity_title)
                 }
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-                super.onPageScrollStateChanged(state)
             }
         })
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -120,6 +151,7 @@ class MainMusicActivity : AppCompatActivity() {
         activityToolBar = findViewById(R.id.music_activity_tool_bar_container)
         activityTitle = activityToolBar.findViewById(R.id.music_activity_title)
         activityBackButton = activityToolBar.findViewById(R.id.music_activity_btn_back)
+        mProgressDialog = CustomProgressBar(this)
     }
 
     override fun onRequestPermissionsResult(
@@ -157,10 +189,36 @@ class MainMusicActivity : AppCompatActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        when {
+            isInHotAlbum -> {
+                activityTitle.text = getString(R.string.activity_title)
+                fragment_featured_container.visibility = View.VISIBLE
+                hot_album_details_rv.visibility = View.GONE
+                isInHotAlbum = false
+            }
+            isInEffectAlbum -> {
+                activityTitle.text = getString(R.string.activity_title)
+                effect_fragment_rv.visibility = View.VISIBLE
+                effect_fragment_effect_details_rv.visibility = View.GONE
+                isInEffectAlbum = false
+            }
+            else -> {
+                super.onBackPressed()
+            }
+        }
+    }
+
     override fun onStop() {
         Timber.d("congnm onStop")
         SharePrefUtils.putInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO, SharePrefUtils.getInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO,0).plus(1))
         super.onStop()
+    }
+
+    interface HandleOnActivity {
+        fun onClickAddButton(name: String,duration: Int,path: String,startTime: Int, endTime: Int)
+
+        fun onActivityBackPressed(isInHotAlbum: Boolean, isInEffectAlbum: Boolean)
     }
 }
 

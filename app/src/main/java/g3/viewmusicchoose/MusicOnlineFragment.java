@@ -86,7 +86,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
         loadAudioData();
 
         //
-        mCustomProgressBar = new CustomProgressBar();
+        mCustomProgressBar = new CustomProgressBar(getContext());
         return view;
     }
 
@@ -534,7 +534,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
                             });
                         }
 
-                        mCustomProgressBar.dialog.dismiss();
+                        mCustomProgressBar.dismiss();
                     }
 
                     @Override
@@ -554,7 +554,7 @@ public class MusicOnlineFragment extends Fragment implements MusicOnlineAdapter.
                         // Show error
 //                        To.show(R.string.message_network_not_available);
 
-                        mCustomProgressBar.dialog.dismiss();
+                        mCustomProgressBar.dismiss();
                     }
                 });
     }

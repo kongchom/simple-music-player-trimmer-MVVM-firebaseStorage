@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.R
 import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.ui.featured.ui.HotAlbumAdapter
+import kotlinx.android.synthetic.main.item_effect_album.view.*
 import kotlinx.android.synthetic.main.item_hot_album.view.*
 
 class EffectAlbumAdapter constructor(var effectAlbumList: List<EffectAlbum>) :
@@ -17,7 +18,7 @@ class EffectAlbumAdapter constructor(var effectAlbumList: List<EffectAlbum>) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EffectAlbumViewHolder =
         EffectAlbumViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.item_hot_album, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.item_effect_album, parent, false)
         )
 
     override fun getItemCount(): Int = effectAlbumList.size
@@ -39,13 +40,13 @@ class EffectAlbumAdapter constructor(var effectAlbumList: List<EffectAlbum>) :
 
         fun bind(item: EffectAlbum) {
             with(itemView) {
-                hot_album_name.text = item.getName()
+                effect_album_name.text = item.getName()
                 if (item.getThumb().isEmpty()) {
-                    hot_album_thumb.setImageResource(R.drawable.default_album)
+                    effect_album_thumb.setImageResource(R.drawable.default_album)
                 } else {
-                    hot_album_thumb.setImageBitmap(item.getThumbBitmap())
+                    effect_album_thumb.setImageBitmap(item.getThumbBitmap())
                 }
-                hot_album_number_of_track.text = item.getNumOfTrack().toString()
+                effect_album_number_of_track.text = item.getNumOfTrack().toString()
             }
         }
     }

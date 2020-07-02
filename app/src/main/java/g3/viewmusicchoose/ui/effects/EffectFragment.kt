@@ -13,10 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.gson.Gson
 import g3.viewmusicchoose.*
+import g3.viewmusicchoose.ui.MainMusicActivity
 import g3.viewmusicchoose.ui.featured.ui.FeaturedFragmentViewModel
 import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
+import g3.viewmusicchoose.ui.mymusic.MyMusicFragment
 import g3.viewmusicchoose.util.MyMediaPlayer
 import timber.log.Timber
 import javax.inject.Inject
@@ -39,6 +40,9 @@ class EffectFragment : Fragment() {
     lateinit var mediaPlayer: MyMediaPlayer
     lateinit var trimView: CustomTrimView
     lateinit var str: String
+    lateinit var mProgressDialog: CustomProgressBar
+    private lateinit var mAct: MainMusicActivity
+    private lateinit var listener: MainMusicActivity.HandleOnActivity
     var handler = Handler()
 
     @Inject
@@ -52,7 +56,6 @@ class EffectFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_effect,container,false)
     }
 
@@ -63,23 +66,23 @@ class EffectFragment : Fragment() {
         mediaPlayer = MyMediaPlayer.getInstance(requireContext())
         mViewModel.effectAlbumList.observe(viewLifecycleOwner, Observer {
 
-            effectRvAdapter = EffectAlbumAdapter(RealmUtil.getInstance().getList(EffectAlbum::class.java))
+            effectRvAdapter = EffectAlbumAdapter(mViewModel.getStubList())
             effectRecyclerView.adapter = effectRvAdapter
             effectRecyclerView.layoutManager = GridLayoutManager(requireContext(),3,GridLayoutManager.VERTICAL,false)
 
             //effect details rv
             effectRvAdapter.onItemClick = { item, position ->
                 initAdapterView(item)
-
                 Timber.d("congnm observe data effect album detail ${item.getName()} ")
                 Timber.d("congnm observe data effect album detail ${item.getNumOfTrack()} ")
-                Timber.d("congnm observe data effect album detail ${item.getListAudio().size} ")
-                effectDetailRvAdapter = HotMusicAdapter(item.getListAudio(),false)
+                Timber.d("congnm observe data effect album detail ${item.getListEffectAudio().size} ")
+                effectDetailRvAdapter = HotMusicAdapter(it[position].getListEffectAudio(),false)
                 effectDetailsRecyclerView.adapter = effectDetailRvAdapter
                 effectDetailsRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
 
                 effectDetailRvAdapter.onItemClick = { item, position ->
                     if (item.isDownloaded) {
+                        playSelectedTrack(item)
                         effectDetailRvAdapter.setItemSelected(position, isDownloaded = true)
                     } else {
                         pauseCurrentTrack()
@@ -91,14 +94,17 @@ class EffectFragment : Fragment() {
                 }
 
                 effectDetailRvAdapter.onDownloadClick = { item, position ->
+                    mProgressDialog.show(requireContext())
                     featuredFragmentViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
                         if (downloadSucceed) {
+                            mProgressDialog.dismiss()
                             effectDetailRvAdapter.setItemSelected(position, isDownloaded = true)
                             //init play music view + play music
                             Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
                             mediaPlayer.playSound(item.audioFileName, null)
                             playMusicButton.setImageResource(R.drawable.icon_pause)
                         } else {
+                            mProgressDialog.dismiss()
                             effectDetailRvAdapter.setItemSelected(position, isDownloaded = false)
                             Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
                         }
@@ -109,10 +115,16 @@ class EffectFragment : Fragment() {
 
     }
 
+    private fun playSelectedTrack(item: Music) {
+        mediaPlayer.playSound(item.audioFileName,null)
+        playMusicButton.setImageResource(R.drawable.icon_pause)
+    }
+
     private fun initAdapterView(item: EffectAlbum) {
+        listener.onActivityBackPressed(isInHotAlbum = false, isInEffectAlbum = true)
+        activityTitle.text = item.getName()
         effectRecyclerView.visibility = View.GONE
         effectDetailsRecyclerView.visibility = View.VISIBLE
-        activityTitle.text = item.getName()
         activityBackButton.setOnClickListener {
             activityTitle.text = getString(R.string.activity_title)
             effectRecyclerView.visibility = View.VISIBLE
@@ -168,11 +180,32 @@ class EffectFragment : Fragment() {
         activityTitle = activity?.findViewById(R.id.music_activity_title)!!
         activityBackButton = activity?.findViewById(R.id.music_activity_btn_back)!!
         trimView = activity?.findViewById(R.id.music_activity_trim_view)!!
+        mProgressDialog = CustomProgressBar(requireContext())
     }
 
     private fun initPlayMusicView(item: Music) {
         playMusicView.visibility = View.VISIBLE
         playMusicTrackTitle.text = item.name
         playMusicTrackDuration.text = item.durationText
+    }
+
+    companion object {
+        fun newInstance(mAct: MainMusicActivity, listener: MainMusicActivity.HandleOnActivity): EffectFragment {
+            val fragment = EffectFragment()
+            fragment.mAct = mAct
+            fragment.listener = listener
+            return fragment
+        }
+    }
+
+    override fun onStop() {
+        playMusicButton.setImageResource(R.drawable.icon_play_music)
+        mediaPlayer.pauseSound(null)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
+        mediaPlayer.stopSound()
+        super.onDestroy()
     }
 }

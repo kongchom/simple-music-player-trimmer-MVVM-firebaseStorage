@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.annotations.SerializedName
 import g3.viewmusicchoose.Music
+import io.realm.Realm
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
@@ -49,8 +50,8 @@ open class EffectAlbum: RealmObject() {
         return this.numOfTrack
     }
 
-    fun getListAudio(): RealmList<Music> {
-        return this.listAudioOfEffectAlbum!!
+    fun getListEffectAudio(): RealmList<Music> {
+        return this.listAudioOfEffectAlbum ?: RealmList()
     }
 
     fun setListAudio(list: RealmList<Music>) {

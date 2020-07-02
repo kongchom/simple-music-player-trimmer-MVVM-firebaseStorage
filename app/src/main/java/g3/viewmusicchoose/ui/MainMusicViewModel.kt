@@ -23,9 +23,11 @@ class MainMusicViewModel @Inject constructor(
     var hotMusicList = MutableLiveData<MutableList<Music>>()
     var hotAlbumList = MutableLiveData<MutableList<Album>>()
     var isShowErrorScreen = MutableLiveData<Boolean>()
+    var showProgressDialog = MutableLiveData<Boolean>()
 
     init {
         isShowErrorScreen.value = false
+        showProgressDialog.value = false
         numberOfLoad  = SharePrefUtils.getInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO,0)
         Timber.d("congnm numberOfLoad ${numberOfLoad.toString()}")
         hotMusicList.value = ArrayList()
@@ -56,9 +58,14 @@ class MainMusicViewModel @Inject constructor(
 
     @SuppressLint("CheckResult")
     fun requestStringConfig() {
+        showProgressDialog.value = true
+        showProgressDialog.notifyObserver()
         downloadAudioFromFirebaseUseCase.requestJsonStr().applyScheduler().subscribe({
-
+            showProgressDialog.value = false
+            showProgressDialog.notifyObserver()
         },{
+            showProgressDialog.value = false
+            showProgressDialog.notifyObserver()
             Timber.d("congnm request json onError ${it.message}")
         })
     }

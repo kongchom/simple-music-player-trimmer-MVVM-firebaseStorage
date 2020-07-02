@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.*
+import g3.viewmusicchoose.ui.MainMusicActivity
 import g3.viewmusicchoose.ui.effects.EffectViewModel
 import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.util.MyMediaPlayer
@@ -31,6 +32,8 @@ class FeaturedFragment : Fragment() {
     private lateinit var hotMusicAdapter: HotMusicAdapter
     private lateinit var hotAlbumAdapter: HotAlbumAdapter
     private lateinit var hotAlbumItemAdapter: HotMusicAdapter
+    private lateinit var mAct: MainMusicActivity
+    private lateinit var listener: MainMusicActivity.HandleOnActivity
     lateinit var playMusicView: View
     lateinit var trimView: CustomTrimView
     lateinit var btnDownload: View
@@ -41,6 +44,7 @@ class FeaturedFragment : Fragment() {
     lateinit var activityToolBar: LinearLayout
     lateinit var playMusicTrackDuration: TextView
     lateinit var rvLayoutManager: LinearLayoutManager
+    lateinit var mProgressDialog: CustomProgressBar
     var handler = Handler()
     var onClickHotAlbumListener: OnClickHotAlbumListener? = null
 
@@ -86,6 +90,7 @@ class FeaturedFragment : Fragment() {
 
             hotMusicAdapter.onItemClick = { item, position ->
                 if (item.isDownloaded) {
+                    playSelectedTrack(item)
                     hotMusicAdapter.setItemSelected(position, isDownloaded = true)
                 } else {
                     pauseCurrentTrack()
@@ -119,13 +124,13 @@ class FeaturedFragment : Fragment() {
             hotAlbumAdapter.onItemClick = { item, position ->
                 //set needed views
                 initAlbumDetailsView(item)
-
                 hotAlbumItemAdapter = HotMusicAdapter(it[position].getListAudio(),false)
                 Timber.d("congnm hot album item adapter size${it[position].getListAudio().size}")
                 hot_album_details_rv.adapter = hotAlbumItemAdapter
 
                 hotAlbumItemAdapter.onItemClick = { item, position ->
                     if (item.isDownloaded) {
+                        playSelectedTrack(item)
                         hotAlbumItemAdapter.setItemSelected(position, isDownloaded = true)
                     } else {
                         pauseCurrentTrack()
@@ -155,9 +160,24 @@ class FeaturedFragment : Fragment() {
             }
             featured_fragment_hot_album_rv.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
         })
+
+        mViewModel.showProgressDialog.observe(requireActivity(), Observer { isShowDialog ->
+            if (isShowDialog) {
+                Timber.d("congnm show progress dialog")
+                mProgressDialog.show(requireContext())
+            } else {
+                mProgressDialog.dismiss()
+            }
+        })
+    }
+
+    private fun playSelectedTrack(item: Music) {
+        mediaPlayer.playSound(item.audioFileName,null)
+        playMusicButton.setImageResource(R.drawable.icon_pause)
     }
 
     private fun initAlbumDetailsView(item: Album) {
+        listener.onActivityBackPressed(isInHotAlbum = true, isInEffectAlbum = false)
         fragment_featured_container.visibility = View.GONE
         hot_album_details_rv.visibility = View.VISIBLE
         activityTitle.text = item.getName()
@@ -216,6 +236,7 @@ class FeaturedFragment : Fragment() {
         activityToolBar = requireActivity().findViewById(R.id.music_activity_tool_bar_container)
         activityTitle = activityToolBar.findViewById(R.id.music_activity_title)
         activityBackButton = activityToolBar.findViewById(R.id.music_activity_btn_back)
+        mProgressDialog = CustomProgressBar(requireContext())
     }
 
     private fun initPlayMusicView(item: Music) {
@@ -225,18 +246,33 @@ class FeaturedFragment : Fragment() {
     }
 
     override fun onResume() {
-        mViewModel.initData()
         Timber.d("congnm on resume view featured fragment")
         super.onResume()
     }
 
     override fun onStop() {
         Timber.d("congnm on stop view featured fragment")
-        mediaPlayer.stopSound()
+        playMusicButton.setImageResource(R.drawable.icon_play_music)
+        mediaPlayer.pauseSound(null)
         super.onStop()
     }
 
+    override fun onDestroy() {
+        mediaPlayer.stopSound()
+        super.onDestroy()
+    }
+
+
     interface OnClickHotAlbumListener {
         fun onClickHotAlbum()
+    }
+
+    companion object {
+        fun newInstance(mAct: MainMusicActivity, listener: MainMusicActivity.HandleOnActivity): FeaturedFragment {
+            val fragment = FeaturedFragment()
+            fragment.mAct = mAct
+            fragment.listener = listener
+            return fragment
+        }
     }
 }

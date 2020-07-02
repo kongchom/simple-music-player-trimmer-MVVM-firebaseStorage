@@ -14,6 +14,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.*
+import g3.viewmusicchoose.ui.MainMusicActivity
+import g3.viewmusicchoose.ui.featured.ui.FeaturedFragment
 import g3.viewmusicchoose.util.MyMediaPlayer
 import timber.log.Timber
 import java.io.File
@@ -32,6 +34,8 @@ class MyMusicFragment : Fragment() {
     lateinit var myMysicRv: RecyclerView
     lateinit var myMysicRvAdapter: MyMusicAdapter
     lateinit var rvLayoutManager: LinearLayoutManager
+    private lateinit var mAct: MainMusicActivity
+    private lateinit var listener: MainMusicActivity.HandleOnActivity
     var handler = Handler()
 
     lateinit var mediaPlayer: MyMediaPlayer
@@ -130,8 +134,23 @@ class MyMusicFragment : Fragment() {
         activityBackButton = activity?.findViewById(R.id.music_activity_btn_back)!!
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    companion object {
+        fun newInstance(mAct: MainMusicActivity, listener: MainMusicActivity.HandleOnActivity): MyMusicFragment {
+            val fragment = MyMusicFragment()
+            fragment.mAct = mAct
+            fragment.listener = listener
+            return fragment
+        }
+    }
+
+    override fun onStop() {
+        playMusicButton.setImageResource(R.drawable.icon_play_music)
+        mediaPlayer.pauseSound(null)
+        super.onStop()
+    }
+
+    override fun onDestroy() {
         mediaPlayer.stopSound()
+        super.onDestroy()
     }
 }

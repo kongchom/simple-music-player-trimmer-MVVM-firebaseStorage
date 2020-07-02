@@ -3,6 +3,7 @@ package g3.viewmusicchoose.ui.effects
 import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.RealmUtil
 import g3.viewmusicchoose.repo.featured.GetLocalAudioDataUseCase
 import g3.viewmusicchoose.ui.featured.model.Album
@@ -42,5 +43,36 @@ class EffectViewModel @Inject constructor(
 
         })
 
+    }
+
+    fun getStubList(): List<EffectAlbum> {
+        val effectAlbum = EffectAlbum()
+        effectAlbum.setName("Stub Album")
+        return arrayListOf<EffectAlbum>(
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum,
+            effectAlbum
+        )
     }
 }

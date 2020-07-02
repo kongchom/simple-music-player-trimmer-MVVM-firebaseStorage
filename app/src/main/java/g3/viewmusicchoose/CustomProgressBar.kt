@@ -10,9 +10,9 @@ import androidx.annotation.NonNull
 import androidx.core.content.res.ResourcesCompat
 import kotlinx.android.synthetic.main.progress_bar.view.*
 
-class CustomProgressBar {
+class CustomProgressBar(context: Context) {
 
-    lateinit var dialog: Dialog
+    var dialog: Dialog = Dialog(context,R.style.CustomProgressBarTheme)
 
     fun show(context: Context): Dialog {
         return show(context, null)
@@ -29,12 +29,13 @@ class CustomProgressBar {
         setColorFilter(view.cp_pbar.indeterminateDrawable,
                 ResourcesCompat.getColor(context.resources, R.color.c_black_alpha_70, null)) //Progress Bar Color
         view.cp_title.setTextColor(Color.WHITE) //Text Color
-
-        dialog = Dialog(context, R.style.CustomProgressBarTheme)
         dialog.setContentView(view)
         dialog.show()
-
         return dialog
+    }
+
+    fun dismiss() {
+        dialog.dismiss()
     }
 
     private fun setColorFilter(@NonNull drawable: Drawable, color: Int) {
