@@ -11,7 +11,10 @@ import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.ui.featured.model.DownloadAudioFromFirebaseUseCase
 import g3.viewmusicchoose.util.applyScheduler
 import g3.viewmusicchoose.util.notifyObserver
+import lib.managerstorage.ManagerStorage
+import lib.managerstorage.OnDownloadFileListener
 import timber.log.Timber
+import java.io.File
 import javax.inject.Inject
 
 class MainMusicViewModel @Inject constructor(
@@ -68,5 +71,44 @@ class MainMusicViewModel @Inject constructor(
             showProgressDialog.notifyObserver()
             Timber.d("congnm request json onError ${it.message}")
         })
+    }
+
+    @SuppressLint("CheckResult")
+    fun downloadCurrentTrack(name: String?, position: Int, onDone: (Boolean) -> Unit) {
+        //Check internet connection
+        showProgressDialog.value = true
+        showProgressDialog.notifyObserver()
+        checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isWifiConnected ->
+            //If internet is available, request download file from firebase
+            if (isWifiConnected) {
+                val trackPath = GlobalDef.FOLDER_AUDIO + name
+                ManagerStorage.downloadFileToExternalStorage(
+                    GlobalDef.PATH_DOWNLOAD_AUDIO + name,
+                    GlobalDef.FOLDER_AUDIO,
+                    name!!,
+                    object: OnDownloadFileListener {
+                        override fun OnSuccessListener(file: File) {
+                            showProgressDialog.value = false
+                            showProgressDialog.notifyObserver()
+                            onDone.invoke(true)
+                        }
+                        override fun OnFailListener() {
+                            showProgressDialog.value = false
+                            showProgressDialog.notifyObserver()
+                            onDone.invoke(false)
+                        }
+                    }
+                )
+            } else {
+                showProgressDialog.value = false
+                showProgressDialog.notifyObserver()
+                onDone.invoke(false)
+            }
+        },{
+            showProgressDialog.value = false
+            showProgressDialog.notifyObserver()
+            onDone.invoke(false)
+        })
+
     }
 }

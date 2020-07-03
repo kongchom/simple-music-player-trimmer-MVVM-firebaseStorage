@@ -13,8 +13,6 @@ import javax.inject.Inject
 interface IMusicRepository {
     fun getEffectAlbumList(): Single<List<EffectAlbum>>
 
-    fun getAllFirebaseData(): Completable
-
     fun getStringConfigJson(): Completable
 
     fun isWifiConnected(): Single<Boolean>

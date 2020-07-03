@@ -72,7 +72,7 @@ class MyMusicAdapter constructor(private var myMusicList: List<LocalSong>) :
         }
     }
 
-    fun setItemSelected(position: Int, isDownloaded: Boolean) {
+    fun setItemSelected(position: Int) {
         Timber.d("congnm set item selected $position - $lastPosition")
         myMusicList[position].isSelect = true
         if (lastPosition != -1 && lastPosition != position) {

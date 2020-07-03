@@ -28,10 +28,6 @@ class LocalMusicRepository @Inject constructor(
         return Single.just(RealmUtil.getInstance().getList(EffectAlbum::class.java))
     }
 
-    override fun getAllFirebaseData(): Completable {
-        TODO("Not yet implemented")
-    }
-
     override fun observeData(cb:() -> Unit) {
         cbData = cb
     }
@@ -132,8 +128,7 @@ class LocalMusicRepository @Inject constructor(
                     realm.beginTransaction()
                     val eClassTheme =
                         realm.where(Music::class.java).findAll()
-                    eClassTheme.deleteAllFromRealm()
-                    realm.copyToRealmOrUpdate<Music>(musics)
+                    realm.insertOrUpdate(musics)
                     realm.commitTransaction()
                 }
             }
