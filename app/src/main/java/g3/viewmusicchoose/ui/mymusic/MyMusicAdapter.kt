@@ -74,6 +74,10 @@ class MyMusicAdapter constructor(private var myMusicList: List<LocalSong>) :
 
     fun setItemSelected(position: Int) {
         Timber.d("congnm set item selected $position - $lastPosition")
+        //Un select all items by set position = -1
+        if (position == -1){
+            myMusicList[lastPosition].isSelect = false
+        }
         myMusicList[position].isSelect = true
         if (lastPosition != -1 && lastPosition != position) {
             myMusicList[lastPosition].isSelect = false

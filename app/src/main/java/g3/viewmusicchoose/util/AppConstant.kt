@@ -7,6 +7,7 @@ object AppConstant {
     const val MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE = 102
     const val PROVIDER = "g3.viewchoosephoto.provider"
     const val TAB_LAYOUT_SIZE = 3
+    const val RESET_SELECT_STATE_ADAPTER = -1
 
     private const val OUTPUT_FOLDER_NAME = "VideoMakerSlideshow"
     private val DEFAULT_FOLDER_OUTPUT =

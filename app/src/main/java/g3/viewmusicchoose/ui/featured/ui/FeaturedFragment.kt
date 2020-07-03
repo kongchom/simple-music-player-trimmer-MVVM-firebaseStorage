@@ -13,6 +13,7 @@ import g3.viewmusicchoose.*
 import g3.viewmusicchoose.ui.MainMusicActivity
 import g3.viewmusicchoose.ui.MainMusicViewModel
 import g3.viewmusicchoose.ui.featured.model.Album
+import g3.viewmusicchoose.util.AppConstant
 import g3.viewmusicchoose.util.MyMediaPlayer
 import kotlinx.android.synthetic.main.fragment_featured.*
 import timber.log.Timber
@@ -31,7 +32,7 @@ class FeaturedFragment : Fragment() {
     private lateinit var hotAlbumDetailRv: RecyclerView
     private lateinit var hotMusicAdapter: HotMusicAdapter
     private lateinit var hotAlbumAdapter: HotAlbumAdapter
-    private lateinit var hotAlbumItemAdapter: HotMusicAdapter
+    private var hotAlbumItemAdapter: HotMusicAdapter? = null
     private lateinit var mAct: MainMusicActivity
     private lateinit var listener: MainMusicActivity.HandleOnActivity
     lateinit var rvLayoutManager: LinearLayoutManager
@@ -85,6 +86,8 @@ class FeaturedFragment : Fragment() {
             hotMusicAdapter.onItemClick = { item, position ->
                 //Set play view = visible, set data for play music view
                 mAct.initPlayMusicView(item)
+                //Reset select state of hot album item adapter
+                hotAlbumItemAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
                 //check is same track?
                 if (position != hotMusicAdapter.lastPosition) {
                     //Set item is selected
@@ -132,16 +135,19 @@ class FeaturedFragment : Fragment() {
             featured_fragment_hot_album_rv.adapter = hotAlbumAdapter
 
             hotAlbumAdapter.onItemClick = { item, position ->
-                //set needed views
+                //set needed views and set isInHotAlbum = true
                 mAct.initAlbumDetailsView(item)
+                //Reset select state of hot music adapter
+                hotMusicAdapter.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+
                 hotAlbumItemAdapter = HotMusicAdapter(it[position].getListAudio(),false)
                 Timber.d("congnm hot album item adapter size${it[position].getListAudio().size}")
                 hot_album_details_rv.adapter = hotAlbumItemAdapter
 
-                hotAlbumItemAdapter.onItemClick = { item, position ->
-                    if (position != hotAlbumItemAdapter.lastPosition) {
+                hotAlbumItemAdapter?.onItemClick = { item, position ->
+                    if (position != hotAlbumItemAdapter?.lastPosition) {
                         //Set item is selected
-                        hotAlbumItemAdapter.setItemSelected(position)
+                        hotAlbumItemAdapter?.setItemSelected(position)
                         //If any current track playing -> stop
                         if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
                             mediaPlayer.stopSound()
@@ -161,7 +167,7 @@ class FeaturedFragment : Fragment() {
                                     mAct.playSelectedTrack(item)
                                     mainMusicViewModel.updateItemHotMusic(item)
                                     Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
-                                    hotAlbumItemAdapter.setItemDownloaded(position)
+                                    hotAlbumItemAdapter?.setItemDownloaded(position)
                                 } else {
                                     //in case download fail: show toast
                                     mAct.setShowLoadingVm(false)

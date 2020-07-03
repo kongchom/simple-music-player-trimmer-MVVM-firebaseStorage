@@ -1,11 +1,7 @@
 package g3.viewmusicchoose;
 
-import androidx.room.util.FileUtil;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.io.File;
-
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 import io.realm.annotations.PrimaryKey;

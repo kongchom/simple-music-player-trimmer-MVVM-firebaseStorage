@@ -22,7 +22,10 @@ import g3.viewmusicchoose.ui.effects.EffectAlbum
 import g3.viewmusicchoose.ui.effects.EffectFragment
 import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.ui.featured.ui.FeaturedFragment
+import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
+import g3.viewmusicchoose.ui.mymusic.MyMusicAdapter
 import g3.viewmusicchoose.ui.mymusic.MyMusicFragment
+import g3.viewmusicchoose.util.AppConstant
 import g3.viewmusicchoose.util.AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
 import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
 import g3.viewmusicchoose.util.MyMediaPlayer
@@ -45,11 +48,15 @@ class MainMusicActivity : AppCompatActivity() {
     lateinit var activityToolBar: LinearLayout
     lateinit var playMusicTrackDuration: TextView
     lateinit var mProgressDialog: CustomProgressBar
+
     var isInHotAlbum: Boolean = false
     var isInEffectAlbum: Boolean = false
     var isInMyMusic: Boolean = false
     var mCurrentFrag = FeaturedFragment()
-
+    var hotMusicAdapter: HotMusicAdapter? = null
+    var hotAlbumItemAdapter: HotMusicAdapter? = null
+    var effectItemAdapter: HotMusicAdapter? = null
+    var myMusicAdapter: MyMusicAdapter? = null
     var handler = Handler()
     lateinit var mediaPlayer: MyMediaPlayer
 
@@ -57,19 +64,28 @@ class MainMusicActivity : AppCompatActivity() {
     lateinit var mViewModel: MainMusicViewModel
 
     var listener = object : HandleOnActivity {
-        override fun onClickAddButton(
-            name: String,
-            duration: Int,
-            path: String,
-            startTime: Int,
-            endTime: Int
-        ) {
+        override fun onClickAddButton(name: String, duration: Int, path: String, startTime: Int, endTime: Int) {
 
         }
 
         override fun onActivityBackPressed(isInHotAlbum: Boolean, isInEffectAlbum: Boolean) {
             this@MainMusicActivity.isInHotAlbum = isInHotAlbum
             this@MainMusicActivity.isInEffectAlbum = isInEffectAlbum
+        }
+
+        override fun onChangeAdapter(hotMusicAdapter: HotMusicAdapter, myMusicAdapter: MyMusicAdapter) {
+            if (!isInHotAlbum && isInMyMusic && isInEffectAlbum) {
+                this@MainMusicActivity.hotMusicAdapter = hotMusicAdapter
+            }
+            if (isInHotAlbum) {
+                this@MainMusicActivity.hotAlbumItemAdapter = hotMusicAdapter
+            }
+            if (isInMyMusic) {
+                this@MainMusicActivity.myMusicAdapter = myMusicAdapter
+            }
+            if (isInEffectAlbum) {
+                this@MainMusicActivity.effectItemAdapter = hotMusicAdapter
+            }
         }
     }
 
@@ -143,8 +159,22 @@ class MainMusicActivity : AppCompatActivity() {
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                //check whether we are in page my music
-                isInMyMusic = position == 1
+                when (position) {
+                    0 -> {
+                        myMusicAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                        effectItemAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                    }
+                    1 -> {
+                        hotMusicAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                        hotAlbumItemAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                        effectItemAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                    }
+                    2 -> {
+                        myMusicAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                        hotMusicAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                        hotAlbumItemAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+                    }
+                }
             }
         })
         viewPager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
@@ -258,18 +288,9 @@ class MainMusicActivity : AppCompatActivity() {
         }
     }
 
-    fun setShowLoading(show: Boolean) {
-        if(show) {
-            mProgressDialog.show(this)
-        } else {
-            mProgressDialog.dismiss()
-        }
-    }
-
     fun setShowLoadingVm(show: Boolean) {
         mViewModel.showProgressDialog(show)
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -360,6 +381,8 @@ class MainMusicActivity : AppCompatActivity() {
         fun onClickAddButton(name: String, duration: Int, path: String, startTime: Int, endTime: Int)
 
         fun onActivityBackPressed(isInHotAlbum: Boolean, isInEffectAlbum: Boolean)
+
+        fun onChangeAdapter(hotMusicAdapter: HotMusicAdapter, myMusicAdapter: MyMusicAdapter)
     }
 }
 

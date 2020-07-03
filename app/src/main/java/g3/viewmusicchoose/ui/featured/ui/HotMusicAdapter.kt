@@ -100,6 +100,10 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
 
     fun setItemSelected(position: Int) {
         Timber.d("congnm set item selected $position - $lastPosition")
+        //Un select all items by set position = -1
+        if (position == -1){
+            hotMusicList[lastPosition].isSelected = false
+        }
         hotMusicList[position].isSelected = true
         if (lastPosition != -1 && lastPosition != position) {
             hotMusicList[lastPosition].isSelected = false
