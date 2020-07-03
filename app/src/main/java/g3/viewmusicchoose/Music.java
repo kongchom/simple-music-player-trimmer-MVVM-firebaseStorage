@@ -1,6 +1,10 @@
 package g3.viewmusicchoose;
 
+import androidx.room.util.FileUtil;
+
 import com.google.gson.annotations.SerializedName;
+
+import java.io.File;
 
 import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
@@ -14,14 +18,19 @@ public class Music extends RealmObject {
 
     @SerializedName("audio_name")
     private String name;
+
     private int duration;
+
     @Ignore
     private boolean isSelected;
+
     @SerializedName("audio_url")
     private String url;
     private boolean isDownloaded;
+
     @Ignore
     private boolean isLoading;
+
     @Ignore
     private boolean isAssetAudioFile = false;
 

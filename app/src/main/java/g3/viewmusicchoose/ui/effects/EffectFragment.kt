@@ -80,20 +80,24 @@ class EffectFragment : Fragment() {
                             mediaPlayer.stopSound()
                         }
                         //Check file is downloaded?
-                        if (item.isDownloaded) {
+                        if (item.isDownloaded && mainMusicViewModel.checkFileExist(item)) {
                             Timber.d("congnm play file featured fragment")
                             mAct.playSelectedTrack(item)
                         } else {
                             //in case item is not downloaded yet
                             //download file
+                            mAct.setShowLoadingVm(true)
                             mainMusicViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
                                 if (downloadSucceed) {
                                     //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
+                                    mAct.setShowLoadingVm(false)
                                     mAct.playSelectedTrack(item)
+                                    mainMusicViewModel.updateItemHotMusic(item)
                                     Toast.makeText(context,R.string.download_succeed, Toast.LENGTH_SHORT).show()
                                     effectDetailRvAdapter.setItemDownloaded(position)
                                 } else {
                                     //in case download fail: show toast
+                                    mAct.setShowLoadingVm(false)
                                     Toast.makeText(context,R.string.download_fail, Toast.LENGTH_LONG).show()
                                 }
                             }

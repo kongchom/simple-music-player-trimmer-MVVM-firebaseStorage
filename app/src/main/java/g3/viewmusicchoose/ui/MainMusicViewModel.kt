@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import g3.viewmusicchoose.GlobalDef
 import g3.viewmusicchoose.Music
+import g3.viewmusicchoose.RealmUtil
 import g3.viewmusicchoose.SharePrefUtils
 import g3.viewmusicchoose.repo.CheckInternetConnectionUseCase
 import g3.viewmusicchoose.ui.featured.model.Album
@@ -76,8 +77,6 @@ class MainMusicViewModel @Inject constructor(
     @SuppressLint("CheckResult")
     fun downloadCurrentTrack(name: String?, position: Int, onDone: (Boolean) -> Unit) {
         //Check internet connection
-        showProgressDialog.value = true
-        showProgressDialog.notifyObserver()
         checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isWifiConnected ->
             //If internet is available, request download file from firebase
             if (isWifiConnected) {
@@ -88,27 +87,34 @@ class MainMusicViewModel @Inject constructor(
                     name!!,
                     object: OnDownloadFileListener {
                         override fun OnSuccessListener(file: File) {
-                            showProgressDialog.value = false
-                            showProgressDialog.notifyObserver()
                             onDone.invoke(true)
                         }
                         override fun OnFailListener() {
-                            showProgressDialog.value = false
-                            showProgressDialog.notifyObserver()
                             onDone.invoke(false)
                         }
                     }
                 )
             } else {
-                showProgressDialog.value = false
-                showProgressDialog.notifyObserver()
                 onDone.invoke(false)
             }
         },{
-            showProgressDialog.value = false
-            showProgressDialog.notifyObserver()
             onDone.invoke(false)
         })
+    }
 
+    fun showProgressDialog(show: Boolean) {
+        showProgressDialog.value = show
+        showProgressDialog.notifyObserver()
+    }
+
+    fun updateItemHotMusic(item: Music) {
+        RealmUtil.getInstance().realm.executeTransaction { realm ->
+            val itemHotMusic = realm.where(Music::class.java).equalTo("name",item.name).findFirst()
+            itemHotMusic?.isDownloaded = true
+        }
+    }
+
+    fun checkFileExist(item: Music): Boolean {
+        return File(GlobalDef.FOLDER_AUDIO + item.audioFileName).exists()
     }
 }

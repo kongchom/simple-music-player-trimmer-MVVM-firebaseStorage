@@ -10,4 +10,8 @@ class DownloadAudioFromFirebaseUseCase @Inject constructor(
     fun requestJsonStr() : Completable {
         return repo.getStringConfigJson()
     }
+
+    fun observeData(cb:() -> Unit) {
+        return repo.observeData(cb)
+    }
 }

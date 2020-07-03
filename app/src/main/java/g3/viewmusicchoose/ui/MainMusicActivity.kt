@@ -4,12 +4,10 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.text.BoringLayout
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -50,6 +48,7 @@ class MainMusicActivity : AppCompatActivity() {
     var isInHotAlbum: Boolean = false
     var isInEffectAlbum: Boolean = false
     var isInMyMusic: Boolean = false
+    var mCurrentFrag = FeaturedFragment()
 
     var handler = Handler()
     lateinit var mediaPlayer: MyMediaPlayer
@@ -101,6 +100,7 @@ class MainMusicActivity : AppCompatActivity() {
                 Timber.d("congnm show progress dialog")
                 mProgressDialog.show(this)
             } else {
+                Timber.d("congnm dismiss progress dialog")
                 mProgressDialog.dismiss()
             }
         })
@@ -129,7 +129,11 @@ class MainMusicActivity : AppCompatActivity() {
 
             override fun createFragment(position: Int): Fragment {
                 return when (position) {
-                    0 -> FeaturedFragment.newInstance(this@MainMusicActivity, listener)
+                    0 -> {
+                        val frag = FeaturedFragment.newInstance(this@MainMusicActivity, listener)
+                        mCurrentFrag = frag
+                        return frag
+                    }
                     1 -> MyMusicFragment.newInstance(this@MainMusicActivity, listener)
                     2 -> EffectFragment.newInstance(this@MainMusicActivity, listener)
                     else -> FeaturedFragment()
@@ -241,6 +245,7 @@ class MainMusicActivity : AppCompatActivity() {
             }, ((end - start) * 1000).toLong())
         }
     }
+
     fun initPlayMusicView(item: Any) {
         playMusicView.visibility = View.VISIBLE
         if (item is Music) {
@@ -252,6 +257,19 @@ class MainMusicActivity : AppCompatActivity() {
             playMusicTrackDuration.text = item.durationText
         }
     }
+
+    fun setShowLoading(show: Boolean) {
+        if(show) {
+            mProgressDialog.show(this)
+        } else {
+            mProgressDialog.dismiss()
+        }
+    }
+
+    fun setShowLoadingVm(show: Boolean) {
+        mViewModel.showProgressDialog(show)
+    }
+
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

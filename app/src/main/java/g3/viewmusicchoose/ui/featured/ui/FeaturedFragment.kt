@@ -1,7 +1,6 @@
 package g3.viewmusicchoose.ui.featured.ui
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.*
 import g3.viewmusicchoose.ui.MainMusicActivity
 import g3.viewmusicchoose.ui.MainMusicViewModel
-import g3.viewmusicchoose.ui.effects.EffectViewModel
 import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.util.MyMediaPlayer
 import kotlinx.android.synthetic.main.fragment_featured.*
@@ -29,6 +27,8 @@ class FeaturedFragment : Fragment() {
     lateinit var mainMusicViewModel: MainMusicViewModel
 
     private lateinit var hotMusicRv: RecyclerView
+    private lateinit var hotAlbumRv: RecyclerView
+    private lateinit var hotAlbumDetailRv: RecyclerView
     private lateinit var hotMusicAdapter: HotMusicAdapter
     private lateinit var hotAlbumAdapter: HotAlbumAdapter
     private lateinit var hotAlbumItemAdapter: HotMusicAdapter
@@ -43,7 +43,6 @@ class FeaturedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         return inflater.inflate(R.layout.fragment_featured,container,false)
     }
 
@@ -58,6 +57,8 @@ class FeaturedFragment : Fragment() {
 
     private fun initView() {
         hotMusicRv = requireView().findViewById(R.id.featured_fragment_hot_music_rv)
+        hotAlbumRv = requireView().findViewById(R.id.featured_fragment_hot_album_rv)
+        hotAlbumDetailRv = requireView().findViewById(R.id.hot_album_details_rv)
     }
 
     private fun observeData() {
@@ -93,20 +94,25 @@ class FeaturedFragment : Fragment() {
                         mediaPlayer.stopSound()
                     }
                     //Check file is downloaded?
-                    if (item.isDownloaded) {
+                    if (item.isDownloaded && mainMusicViewModel.checkFileExist(item) ) {
                         Timber.d("congnm play file featured fragment")
                         mAct.playSelectedTrack(item)
                     } else {
                         //in case item is not downloaded yet
                         //download file
+                        mAct.setShowLoadingVm(true)
                         mainMusicViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
                             if (downloadSucceed) {
                                 //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
+                                mAct.setShowLoadingVm(false)
                                 mAct.playSelectedTrack(item)
+                                mainMusicViewModel.updateItemHotMusic(item)
                                 Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
                                 hotMusicAdapter.setItemDownloaded(position)
                             } else {
                                 //in case download fail: show toast
+                                mAct.setShowLoadingVm(false)
+                                mAct.playSelectedTrack(item)
                                 Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
                             }
                         }
@@ -141,20 +147,24 @@ class FeaturedFragment : Fragment() {
                             mediaPlayer.stopSound()
                         }
                         //Check file is downloaded?
-                        if (item.isDownloaded) {
+                        if (item.isDownloaded && mainMusicViewModel.checkFileExist(item)) {
                             Timber.d("congnm play file featured fragment")
                             mAct.playSelectedTrack(item)
                         } else {
                             //in case item is not downloaded yet
                             //download file
+                            mAct.setShowLoadingVm(true)
                             mainMusicViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
                                 if (downloadSucceed) {
                                     //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
+                                    mAct.setShowLoadingVm(false)
                                     mAct.playSelectedTrack(item)
+                                    mainMusicViewModel.updateItemHotMusic(item)
                                     Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
                                     hotAlbumItemAdapter.setItemDownloaded(position)
                                 } else {
                                     //in case download fail: show toast
+                                    mAct.setShowLoadingVm(false)
                                     Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
                                 }
                             }
