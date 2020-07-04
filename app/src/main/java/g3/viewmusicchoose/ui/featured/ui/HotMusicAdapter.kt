@@ -114,6 +114,7 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
     }
 
     fun setItemDownloaded(position: Int) {
+        Timber.d("congnm set item download")
         hotMusicList[position].isDownloaded = true
         notifyDataSetChanged()
     }

@@ -5,6 +5,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/fragment_feature_error_view_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/colorPrimary"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/network_error"
+            android:textAlignment="center"
+            android:layout_gravity="center"
+            android:textColor="@color/colorAccent"/>
+
+        <androidx.cardview.widget.CardView
+            android:layout_marginTop="@dimen/_8sdp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="@dimen/_4sdp">
+
+            <ImageView
+                android:id="@+id/main_music_try_again"
+                android:layout_width="@dimen/_113sdp"
+                android:layout_height="@dimen/_32sdp"
+                android:src="@drawable/try_again"
+                android:scaleType="centerCrop"
+                />
+        </androidx.cardview.widget.CardView>
+
+    </LinearLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hot_album_details_rv"
         android:layout_width="match_parent"

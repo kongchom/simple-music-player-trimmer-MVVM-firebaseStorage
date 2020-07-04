@@ -57,6 +57,22 @@ class MainMusicViewModel @Inject constructor(
             },{
                 Timber.d("congnm request wifi fail ${it.toString()}")
             })
+        } else {
+            if (hotAlbumList.value.isNullOrEmpty() || hotMusicList.value.isNullOrEmpty()) {
+                checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isConnected ->
+                    Timber.d("congnm request wifi ${isConnected.toString()}")
+                    if (isConnected) {
+                        isShowErrorScreen.value = false
+                        isShowErrorScreen.notifyObserver()
+                        requestStringConfig()
+                    } else {
+                        isShowErrorScreen.value = true
+                        isShowErrorScreen.notifyObserver()
+                    }
+                },{
+                    Timber.d("congnm request wifi fail ${it.toString()}")
+                })
+            }
         }
     }
 

@@ -127,19 +127,19 @@ class MainMusicActivity : AppCompatActivity() {
         mediaPlayer = MyMediaPlayer.getInstance(this)
         initViews()
         requestWriteStoragePermission()
-        observeData()
-        initViewPager()
         initListeners()
+        initViewPager()
+        observeData()
     }
 
     private fun observeData() {
         mViewModel.isShowErrorScreen.observe(this, Observer { needToShowErrorScreen ->
             if (needToShowErrorScreen) {
                 Timber.d("congnm show error true")
-                network_error_view_container.visibility = View.VISIBLE
+
             } else {
                 Timber.d("congnm show error false")
-                network_error_view_container.visibility = View.GONE
+
             }
         })
         mViewModel.showProgressDialog.observe(this, Observer { isShowDialog ->
@@ -154,9 +154,7 @@ class MainMusicActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-        main_music_try_again.setOnClickListener {
-            mViewModel.initData()
-        }
+
     }
 
     private fun requestWriteStoragePermission() {
