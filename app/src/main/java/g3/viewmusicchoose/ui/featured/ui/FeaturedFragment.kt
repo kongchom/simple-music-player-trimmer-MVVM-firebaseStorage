@@ -84,45 +84,34 @@ class FeaturedFragment : Fragment() {
              * Handle on hot music item click
              */
             hotMusicAdapter.onItemClick = { item, position ->
-                //Set play view = visible, set data for play music view
-                mAct.initPlayMusicView(item)
-                //Reset select state of hot album item adapter
-                hotAlbumItemAdapter?.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
+
+                //Reset select state of other adapter
+                listener.onChangeAlbum(isInHotMusic = true, isInHotAlbum = false, isInMyMusic = false, isInEffectAlbum = false)
+                listener.onChangeAdapter(hotMusicAdapter,null)
+                listener.onClearSelectedState()
                 //check is same track?
                 if (position != hotMusicAdapter.lastPosition) {
                     //Set item is selected
                     hotMusicAdapter.setItemSelected(position)
                     //If any current track playing -> stop
-                    if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
-                        mediaPlayer.stopSound()
-                    }
+                    mAct.checkCurrentTrackIsPlaying()
                     //Check file is downloaded?
-                    if (item.isDownloaded && mainMusicViewModel.checkFileExist(item) ) {
+                    if (item.isDownloaded && mainMusicViewModel.checkFileExist(item)) {
                         Timber.d("congnm play file featured fragment")
+                        //Set play view = visible, set data for play music view
+                        mAct.initPlayMusicView(item)
                         mAct.playSelectedTrack(item)
                     } else {
                         //in case item is not downloaded yet
                         //download file
                         mAct.setShowLoadingVm(true)
-                        mainMusicViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
-                            if (downloadSucceed) {
-                                //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
-                                mAct.setShowLoadingVm(false)
-                                mAct.playSelectedTrack(item)
-                                mainMusicViewModel.updateItemHotMusic(item)
-                                Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
-                                hotMusicAdapter.setItemDownloaded(position)
-                            } else {
-                                //in case download fail: show toast
-                                mAct.setShowLoadingVm(false)
-                                mAct.playSelectedTrack(item)
-                                Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
-                            }
-                        }
+                        mAct.downloadCurrentTrack(item, position)
                     }
                 } else {
                     //in case is same track = true
-                    //do nothing
+                    if (!item.isDownloaded && !mainMusicViewModel.checkFileExist(item)) {
+                        mAct.downloadCurrentTrack(item, position)
+                    }
                 }
                 //listener for play pause button and trim view
                 mAct.handlePlayPause(item)
@@ -137,21 +126,20 @@ class FeaturedFragment : Fragment() {
             hotAlbumAdapter.onItemClick = { item, position ->
                 //set needed views and set isInHotAlbum = true
                 mAct.initAlbumDetailsView(item)
-                //Reset select state of hot music adapter
-                hotMusicAdapter.setItemSelected(AppConstant.RESET_SELECT_STATE_ADAPTER)
-
+                listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = true, isInMyMusic = false, isInEffectAlbum = false)
                 hotAlbumItemAdapter = HotMusicAdapter(it[position].getListAudio(),false)
-                Timber.d("congnm hot album item adapter size${it[position].getListAudio().size}")
                 hot_album_details_rv.adapter = hotAlbumItemAdapter
 
                 hotAlbumItemAdapter?.onItemClick = { item, position ->
+                    //Reset select state of other adapter
+                    listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = true, isInMyMusic = false, isInEffectAlbum = false)
+                    listener.onChangeAdapter(hotAlbumItemAdapter,null)
+                    listener.onClearSelectedState()
                     if (position != hotAlbumItemAdapter?.lastPosition) {
                         //Set item is selected
                         hotAlbumItemAdapter?.setItemSelected(position)
-                        //If any current track playing -> stop
-                        if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
-                            mediaPlayer.stopSound()
-                        }
+                        //If any current track playing -> pause
+                        mAct.checkCurrentTrackIsPlaying()
                         //Check file is downloaded?
                         if (item.isDownloaded && mainMusicViewModel.checkFileExist(item)) {
                             Timber.d("congnm play file featured fragment")
@@ -160,24 +148,12 @@ class FeaturedFragment : Fragment() {
                             //in case item is not downloaded yet
                             //download file
                             mAct.setShowLoadingVm(true)
-                            mainMusicViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
-                                if (downloadSucceed) {
-                                    //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
-                                    mAct.setShowLoadingVm(false)
-                                    mAct.playSelectedTrack(item)
-                                    mainMusicViewModel.updateItemHotMusic(item)
-                                    Toast.makeText(context,R.string.download_succeed,Toast.LENGTH_SHORT).show()
-                                    hotAlbumItemAdapter?.setItemDownloaded(position)
-                                } else {
-                                    //in case download fail: show toast
-                                    mAct.setShowLoadingVm(false)
-                                    Toast.makeText(context,R.string.download_fail,Toast.LENGTH_LONG).show()
-                                }
-                            }
+                            mAct.downloadCurrentTrack(item,position)
                         }
                     } else {
-                        //in case is same track = true
-                        //do nothing
+                        if (!item.isDownloaded && !mainMusicViewModel.checkFileExist(item)) {
+                            mAct.downloadCurrentTrack(item,position)
+                        }
                     }
                     mAct.initPlayMusicView(item)
                     mAct.handlePlayPause(item)

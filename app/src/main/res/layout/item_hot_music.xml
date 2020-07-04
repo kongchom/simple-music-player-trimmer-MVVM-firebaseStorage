@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_45sdp"
         android:layout_toLeftOf="@+id/tvAdd"
         android:layout_toRightOf="@+id/iv_disk_container"
         android:orientation="vertical">
@@ -69,7 +70,7 @@
         android:id="@+id/item_hot_music_download"
         android:layout_width="@dimen/_30sdp"
         android:layout_height="@dimen/_30sdp"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginEnd="@dimen/_10sdp"

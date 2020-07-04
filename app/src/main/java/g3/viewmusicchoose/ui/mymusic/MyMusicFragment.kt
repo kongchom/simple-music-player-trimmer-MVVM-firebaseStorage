@@ -65,6 +65,10 @@ class MyMusicFragment : Fragment() {
         myMysicRvAdapter.onItemClick = { item, position ->
             //Set play view = visible, set data for play music view
             mAct.initPlayMusicView(item)
+            //Reset select state of other adapter
+            listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = false, isInMyMusic = true, isInEffectAlbum = false)
+            listener.onChangeAdapter(null,myMysicRvAdapter)
+            listener.onClearSelectedState()
             //check is same track?
             if (position != myMysicRvAdapter.lastPosition) {
                 //Set item is selected

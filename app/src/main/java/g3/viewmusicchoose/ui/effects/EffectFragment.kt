@@ -64,21 +64,25 @@ class EffectFragment : Fragment() {
             //effect details rv
             effectRvAdapter.onItemClick = { item, position ->
                 mAct.initEffectDetailsView(item)
+                listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = false, isInMyMusic = false, isInEffectAlbum = true)
                 effectDetailRvAdapter = HotMusicAdapter(it[position].getListEffectAudio(),false)
                 effectDetailsRecyclerView.adapter = effectDetailRvAdapter
+                listener.onChangeAdapter(effectDetailRvAdapter,null)
                 effectDetailsRecyclerView.layoutManager = LinearLayoutManager(requireContext(),LinearLayoutManager.VERTICAL,false)
 
                 effectDetailRvAdapter.onItemClick = { item, position ->
                     //Set play view = visible, set data for play music view
                     mAct.initPlayMusicView(item)
+                    //Reset select state of other adapters
+                    listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = false, isInMyMusic = false, isInEffectAlbum = true)
+                    listener.onChangeAdapter(effectDetailRvAdapter,null)
+                    listener.onClearSelectedState()
                     //check is same track?
                     if (position != effectDetailRvAdapter.lastPosition) {
                         //Set item is selected
                         effectDetailRvAdapter.setItemSelected(position)
                         //If any current track playing -> stop
-                        if (mediaPlayer.checkNotNull() && mediaPlayer.playingState) {
-                            mediaPlayer.stopSound()
-                        }
+                        mAct.checkCurrentTrackIsPlaying()
                         //Check file is downloaded?
                         if (item.isDownloaded && mainMusicViewModel.checkFileExist(item)) {
                             Timber.d("congnm play file featured fragment")
@@ -87,24 +91,13 @@ class EffectFragment : Fragment() {
                             //in case item is not downloaded yet
                             //download file
                             mAct.setShowLoadingVm(true)
-                            mainMusicViewModel.downloadCurrentTrack(item.audioFileName,position) { downloadSucceed ->
-                                if (downloadSucceed) {
-                                    //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
-                                    mAct.setShowLoadingVm(false)
-                                    mAct.playSelectedTrack(item)
-                                    mainMusicViewModel.updateItemHotMusic(item)
-                                    Toast.makeText(context,R.string.download_succeed, Toast.LENGTH_SHORT).show()
-                                    effectDetailRvAdapter.setItemDownloaded(position)
-                                } else {
-                                    //in case download fail: show toast
-                                    mAct.setShowLoadingVm(false)
-                                    Toast.makeText(context,R.string.download_fail, Toast.LENGTH_LONG).show()
-                                }
-                            }
+                            mAct.downloadCurrentTrack(item,position)
                         }
                     } else {
                         //in case is same track = true
-                        //do nothing
+                        if (!item.isDownloaded && !mainMusicViewModel.checkFileExist(item)) {
+                            mAct.downloadCurrentTrack(item,position)
+                        }
                     }
                     //listener for play pause button and trim view
                     mAct.handlePlayPause(item)

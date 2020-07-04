@@ -52,7 +52,10 @@ class MyMusicAdapter constructor(private var myMusicList: List<LocalSong>) :
 
         init {
             itemView.setOnClickListener {
-                onItemClick?.invoke(myMusicList[absoluteAdapterPosition % myMusicList.size],absoluteAdapterPosition % myMusicList.size)
+                onItemClick?.invoke(
+                    myMusicList[absoluteAdapterPosition % myMusicList.size],
+                    absoluteAdapterPosition % myMusicList.size
+                )
             }
         }
 
@@ -74,15 +77,19 @@ class MyMusicAdapter constructor(private var myMusicList: List<LocalSong>) :
 
     fun setItemSelected(position: Int) {
         Timber.d("congnm set item selected $position - $lastPosition")
-        //Un select all items by set position = -1
-        if (position == -1){
-            myMusicList[lastPosition].isSelect = false
-        }
         myMusicList[position].isSelect = true
         if (lastPosition != -1 && lastPosition != position) {
             myMusicList[lastPosition].isSelect = false
         }
         lastPosition = position
+        notifyDataSetChanged()
+    }
+
+    fun resetSelectedState() {
+        if (lastPosition != -1) {
+            myMusicList[lastPosition].isSelect = false
+        }
+        lastPosition = -1
         notifyDataSetChanged()
     }
 

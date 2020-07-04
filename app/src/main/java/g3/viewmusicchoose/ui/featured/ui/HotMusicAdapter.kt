@@ -82,9 +82,6 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
                 } else {
                     View.VISIBLE
                 }
-                item_hot_music_download.setOnClickListener {
-                    onDownloadClick?.invoke(item, absoluteAdapterPosition)
-                }
                 if (item.isSelected) {
                     item_hot_music_container.setBackgroundColor(R.color.c_black_alpha_70)
                 } else {
@@ -100,15 +97,19 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
 
     fun setItemSelected(position: Int) {
         Timber.d("congnm set item selected $position - $lastPosition")
-        //Un select all items by set position = -1
-        if (position == -1){
-            hotMusicList[lastPosition].isSelected = false
-        }
         hotMusicList[position].isSelected = true
         if (lastPosition != -1 && lastPosition != position) {
             hotMusicList[lastPosition].isSelected = false
         }
         lastPosition = position
+        notifyDataSetChanged()
+    }
+
+    fun resetSelectedState() {
+        if (lastPosition != -1) {
+            hotMusicList[lastPosition].isSelected = false
+        }
+        lastPosition = -1
         notifyDataSetChanged()
     }
 

@@ -75,12 +75,11 @@ class MainMusicViewModel @Inject constructor(
     }
 
     @SuppressLint("CheckResult")
-    fun downloadCurrentTrack(name: String?, position: Int, onDone: (Boolean) -> Unit) {
+    fun downloadCurrentTrack(name: String?,onDone: (Boolean) -> Unit) {
         //Check internet connection
         checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isWifiConnected ->
             //If internet is available, request download file from firebase
             if (isWifiConnected) {
-                val trackPath = GlobalDef.FOLDER_AUDIO + name
                 ManagerStorage.downloadFileToExternalStorage(
                     GlobalDef.PATH_DOWNLOAD_AUDIO + name,
                     GlobalDef.FOLDER_AUDIO,

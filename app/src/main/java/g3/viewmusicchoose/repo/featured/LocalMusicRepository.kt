@@ -86,8 +86,8 @@ class LocalMusicRepository @Inject constructor(
         // Set to list and Realm
         saveEffectAlbum(effectAlbumList)
         Timber.d("save data time ${System.currentTimeMillis()}")
-        saveAudioData(musics)
         saveHotAlbum(hotAlbumList)
+        saveAudioData(musics)
 }
 
     private fun saveEffectAlbum(effectAlbumList: List<EffectAlbum>) {
