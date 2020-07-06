@@ -57,6 +57,8 @@ class MainMusicViewModel @Inject constructor(
                     Timber.d("congnm request wifi ${isConnected.toString()}")
                     if (isConnected) {
                         requestStringConfig()
+                    } else {
+                        showErrorScreen(true)
                     }
                 },{
                 })
@@ -71,6 +73,7 @@ class MainMusicViewModel @Inject constructor(
             showProgressDialog(false)
             showErrorScreen(false)
         },{
+            showErrorScreen(true)
             showProgressDialog(false)
             Timber.d("congnm request json onError ${it.message}")
         })

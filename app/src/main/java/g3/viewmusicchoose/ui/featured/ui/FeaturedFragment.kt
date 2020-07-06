@@ -61,6 +61,56 @@ class FeaturedFragment : Fragment() {
         hotMusicRv = requireView().findViewById(R.id.featured_fragment_hot_music_rv)
         hotAlbumRv = requireView().findViewById(R.id.featured_fragment_hot_album_rv)
         hotAlbumDetailRv = requireView().findViewById(R.id.hot_album_details_rv)
+        val listener = object : RecyclerView.OnItemTouchListener {
+            override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+//                return if (hotAlbumRv.canScrollHorizontally(RecyclerView.FOCUS_FORWARD) ||
+//                    hotAlbumRv.canScrollHorizontally(RecyclerView.FOCUS_BACKWARD) ) {
+//                    when (e.action) {
+//                        MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
+//                        MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(true)
+//                        MotionEvent.ACTION_UP -> rv.parent.requestDisallowInterceptTouchEvent(false)
+//                    }
+//                    false
+//                } else {
+//                    when (e.action) {
+//                        MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(false)
+//                    }
+//                    hotAlbumRv.removeOnItemTouchListener(this)
+//                    true
+//                }
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_UP -> rv.parent.requestDisallowInterceptTouchEvent(false)
+                }
+                return false
+            }
+
+            override fun onTouchEvent(rv: RecyclerView, e: MotionEvent) {
+//                if (hotAlbumRv.canScrollHorizontally(RecyclerView.FOCUS_RIGHT) ||
+//                    hotAlbumRv.canScrollHorizontally(RecyclerView.FOCUS_LEFT)) {
+//                    when(e.action) {
+//                        MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
+//                        MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(true)
+//                        MotionEvent.ACTION_UP ->rv.parent.requestDisallowInterceptTouchEvent(false)
+//                    }
+//                } else {
+//                    when(e.action) {
+//                        MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(false)
+//                    }
+//                }
+                when (e.action) {
+                    MotionEvent.ACTION_DOWN -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_MOVE -> rv.parent.requestDisallowInterceptTouchEvent(true)
+                    MotionEvent.ACTION_UP -> rv.parent.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+
+            override fun onRequestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {}
+        }
+
+        hotAlbumRv.addOnItemTouchListener(listener)
+//        hotAlbumRv.setOnTouchListener(onTouch)
         fragment_featured_try_again.setOnClickListener {
             mAct.mViewModel.initData()
         }
@@ -192,13 +242,14 @@ class FeaturedFragment : Fragment() {
 
         mAct.mViewModel.isShowErrorScreen.observe(viewLifecycleOwner, Observer { needToShowErrorScreen ->
                 if (needToShowErrorScreen) {
+                    Timber.d("congnm is show error feature true")
                     fragment_feature_error_view_container.visibility = View.VISIBLE
                     featured_fragment_tv_hot_album.visibility = View.GONE
                     featured_fragment_tv_hot_music.visibility = View.GONE
                     featured_fragment_hot_album_rv.visibility = View.GONE
                     featured_fragment_hot_music_rv.visibility = View.GONE
                 } else {
-                    mViewModel.initData()
+                    Timber.d("congnm is show error feature false")
                     fragment_feature_error_view_container.visibility = View.GONE
                     featured_fragment_tv_hot_album.visibility = View.VISIBLE
                     featured_fragment_tv_hot_music.visibility = View.VISIBLE
