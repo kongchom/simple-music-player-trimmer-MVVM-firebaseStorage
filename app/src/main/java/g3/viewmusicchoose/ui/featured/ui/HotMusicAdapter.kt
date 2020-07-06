@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import g3.viewmusicchoose.GlobalDef
 import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.R
 import kotlinx.android.synthetic.main.item_hot_music.view.*
 import timber.log.Timber
+import java.io.File
 
 class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private var isContainAds: Boolean) :
     RecyclerView.Adapter<HotMusicAdapter.HotMusicViewHolder>() {
@@ -77,7 +79,7 @@ class HotMusicAdapter constructor(private var hotMusicList: List<Music>, private
                 item_hot_music_duration.text = item.durationText
                 item_hot_music_name.text = item.name
                 iv_disk.setImageResource(R.drawable.default_music_picture)
-                item_hot_music_download.visibility = if (item.isDownloaded) {
+                item_hot_music_download.visibility = if (File(GlobalDef.FOLDER_AUDIO + item.audioFileName).exists()) {
                     View.GONE
                 } else {
                     View.VISIBLE

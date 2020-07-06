@@ -64,25 +64,6 @@ class LocalMusicRepository @Inject constructor(
         val hotAlbumList: List<Album> = gSon.fromJson(str, MusicResponse::class.java).album
         val effectAlbumList: List<EffectAlbum> = gSon.fromJson(str, MusicResponse::class.java).effects
         FunctionUtils.createFolder(GlobalDef.FOLDER_AUDIO)
-        for (music in musics) {
-            // Append with real local path
-            val audioPath = GlobalDef.FOLDER_AUDIO + music.audioFileName
-            Timber.d("congnm saveFileTolocal $audioPath")
-            val localFile = File(audioPath)
-            // If audio is exist, set flag download to true (don't needed re-download)
-            if (localFile.exists()) {
-                Timber.d("congnm music is downloaded")
-                music.isDownloaded = true
-            }
-        }
-        for (album in hotAlbumList) {
-            for (i in 0 until album.getListAudio().size.minus(1))
-                album.getListAudio()[i]!!.isDownloaded = File(GlobalDef.FOLDER_AUDIO + album.getListAudio()[i]!!.audioFileName).exists()
-        }
-        for (effectAlbum in effectAlbumList) {
-            for (i in 0 until effectAlbum.getListEffectAudio().size.minus(1))
-                effectAlbum.getListEffectAudio()[i]!!.isDownloaded = File(GlobalDef.FOLDER_AUDIO + effectAlbum.getListEffectAudio()[i]!!.audioFileName).exists()
-        }
         // Set to list and Realm
         saveEffectAlbum(effectAlbumList)
         Timber.d("save data time ${System.currentTimeMillis()}")

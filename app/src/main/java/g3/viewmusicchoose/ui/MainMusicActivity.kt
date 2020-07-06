@@ -427,11 +427,13 @@ class MainMusicActivity : AppCompatActivity() {
                 activityTitle.text = getString(R.string.activity_title)
                 fragment_featured_container.visibility = View.VISIBLE
                 hot_album_details_rv.visibility = View.GONE
+                isInHotAlbum = false
             }
             isInEffectAlbum && !isInTabMyMusic -> {
                 activityTitle.text = getString(R.string.activity_title)
                 effect_fragment_rv.visibility = View.VISIBLE
                 effect_fragment_effect_details_rv.visibility = View.GONE
+                isInEffectAlbum = false
             }
             isInTabMyMusic -> {
                 super.onBackPressed()
@@ -465,9 +467,7 @@ class MainMusicActivity : AppCompatActivity() {
                 setShowLoadingVm(false)
                 initPlayMusicView(item)
                 playSelectedTrack(item)
-                mViewModel.updateItemHotMusic(item)
                 Toast.makeText(this, R.string.download_succeed, Toast.LENGTH_SHORT).show()
-                adapter.setItemDownloaded(position)
             } else {
                 //in case download fail: show toast
                 setShowLoadingVm(false)
