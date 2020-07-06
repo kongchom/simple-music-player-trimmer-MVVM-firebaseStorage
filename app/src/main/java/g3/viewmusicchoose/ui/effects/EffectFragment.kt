@@ -21,6 +21,8 @@ import g3.viewmusicchoose.ui.MainMusicActivity
 import g3.viewmusicchoose.ui.MainMusicViewModel
 import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
 import g3.viewmusicchoose.util.MyMediaPlayer
+import kotlinx.android.synthetic.main.fragment_effect.*
+import kotlinx.android.synthetic.main.fragment_featured.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -91,12 +93,12 @@ class EffectFragment : Fragment() {
                             //in case item is not downloaded yet
                             //download file
                             mAct.setShowLoadingVm(true)
-                            mAct.downloadCurrentTrack(item,position)
+                            mAct.downloadCurrentTrack(item,position,effectDetailRvAdapter)
                         }
                     } else {
                         //in case is same track = true
                         if (!item.isDownloaded && !mainMusicViewModel.checkFileExist(item)) {
-                            mAct.downloadCurrentTrack(item,position)
+                            mAct.downloadCurrentTrack(item,position,effectDetailRvAdapter)
                         }
                     }
                     //listener for play pause button and trim view
@@ -106,11 +108,24 @@ class EffectFragment : Fragment() {
             }
         })
 
+        mAct.mViewModel.isShowErrorScreen.observe(viewLifecycleOwner, Observer { needToShowErrorScreen ->
+            if (needToShowErrorScreen) {
+                effect_fragment_error_view_container.visibility = View.VISIBLE
+                effect_fragment_rv.visibility = View.GONE
+            } else {
+                mViewModel.initData()
+                effect_fragment_error_view_container.visibility = View.GONE
+                effect_fragment_rv.visibility = View.VISIBLE
+            }
+        })
     }
 
     private fun initViews() {
         effectRecyclerView = requireView().findViewById(R.id.effect_fragment_rv)
         effectDetailsRecyclerView = requireView().findViewById(R.id.effect_fragment_effect_details_rv)
+        fragment_effect_try_again.setOnClickListener {
+            mAct.mViewModel.initData()
+        }
     }
 
     companion object {

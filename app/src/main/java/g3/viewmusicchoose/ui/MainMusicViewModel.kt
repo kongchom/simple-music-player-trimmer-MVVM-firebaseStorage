@@ -24,18 +24,14 @@ class MainMusicViewModel @Inject constructor(
 ): ViewModel() {
 
     var numberOfLoad: Int = 0
-    var hotMusicList = MutableLiveData<MutableList<Music>>()
-    var hotAlbumList = MutableLiveData<MutableList<Album>>()
-    var isShowErrorScreen = MutableLiveData<Boolean>()
     var showProgressDialog = MutableLiveData<Boolean>()
+    var isShowErrorScreen = MutableLiveData<Boolean>()
 
     init {
         isShowErrorScreen.value = false
         showProgressDialog.value = false
         numberOfLoad  = SharePrefUtils.getInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO,0)
         Timber.d("congnm numberOfLoad ${numberOfLoad.toString()}")
-        hotMusicList.value = ArrayList()
-        hotAlbumList.value = ArrayList()
     }
 
     /**
@@ -44,33 +40,25 @@ class MainMusicViewModel @Inject constructor(
     @SuppressLint("CheckResult")
     fun initData() {
         if (numberOfLoad % 5 == 0) {
+            //check wifi to download list
             checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isConnected ->
                 Timber.d("congnm request wifi ${isConnected.toString()}")
                 if (isConnected) {
-                    isShowErrorScreen.value = false
-                    isShowErrorScreen.notifyObserver()
                     requestStringConfig()
                 } else {
-                    isShowErrorScreen.value = true
-                    isShowErrorScreen.notifyObserver()
+                    showErrorScreen(true)
                 }
             },{
-                Timber.d("congnm request wifi fail ${it.toString()}")
             })
         } else {
-            if (hotAlbumList.value.isNullOrEmpty() || hotMusicList.value.isNullOrEmpty()) {
+            //case no wifi -> exit app -> turn on wifi -> enter app again
+            if (RealmUtil.getInstance().getList(Music::class.java).isNullOrEmpty() || RealmUtil.getInstance().getList(Album::class.java).isNullOrEmpty()) {
                 checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isConnected ->
                     Timber.d("congnm request wifi ${isConnected.toString()}")
                     if (isConnected) {
-                        isShowErrorScreen.value = false
-                        isShowErrorScreen.notifyObserver()
                         requestStringConfig()
-                    } else {
-                        isShowErrorScreen.value = true
-                        isShowErrorScreen.notifyObserver()
                     }
                 },{
-                    Timber.d("congnm request wifi fail ${it.toString()}")
                 })
             }
         }
@@ -78,14 +66,12 @@ class MainMusicViewModel @Inject constructor(
 
     @SuppressLint("CheckResult")
     fun requestStringConfig() {
-        showProgressDialog.value = true
-        showProgressDialog.notifyObserver()
+        showProgressDialog(true)
         downloadAudioFromFirebaseUseCase.requestJsonStr().applyScheduler().subscribe({
-            showProgressDialog.value = false
-            showProgressDialog.notifyObserver()
+            showProgressDialog(false)
+            showErrorScreen(false)
         },{
-            showProgressDialog.value = false
-            showProgressDialog.notifyObserver()
+            showProgressDialog(false)
             Timber.d("congnm request json onError ${it.message}")
         })
     }
@@ -120,6 +106,11 @@ class MainMusicViewModel @Inject constructor(
     fun showProgressDialog(show: Boolean) {
         showProgressDialog.value = show
         showProgressDialog.notifyObserver()
+    }
+
+    fun showErrorScreen(show: Boolean) {
+        isShowErrorScreen.value = show
+        isShowErrorScreen.notifyObserver()
     }
 
     fun updateItemHotMusic(item: Music) {

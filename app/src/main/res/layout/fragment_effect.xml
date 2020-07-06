@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:id="@+id/fragment_effect_error_view_container"
+        android:id="@+id/effect_fragment_error_view_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -29,7 +29,7 @@
             app:cardCornerRadius="@dimen/_4sdp">
 
             <ImageView
-                android:id="@+id/main_music_try_again"
+                android:id="@+id/fragment_effect_try_again"
                 android:layout_width="@dimen/_113sdp"
                 android:layout_height="@dimen/_32sdp"
                 android:src="@drawable/try_again"

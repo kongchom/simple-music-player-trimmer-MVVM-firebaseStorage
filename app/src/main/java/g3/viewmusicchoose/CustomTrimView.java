@@ -168,16 +168,16 @@ public class CustomTrimView extends View {
 
     private void drawTrimMp3(Canvas canvas, float width, float height) {
         mPaint.setColor(colorGray);
-        canvas.drawLine(mRectS.width() / 2 + mPadding, height / 2, width - mRectE.width() / 2 - mPadding, height / 2, mPaint);
+        canvas.drawLine(mRectS.width() / 2 + mPadding, height / 2 + 20, width - mRectE.width() / 2 - mPadding, height / 2 + 20, mPaint);
 
         mPaint.setColor(colorPink);
-        canvas.drawLine(mControlStart.x, height / 2, mControlEnd.x, height / 2, mPaint);
+        canvas.drawLine(mControlStart.x, height / 2 + 20, mControlEnd.x, height / 2 + 20, mPaint);
 
-        canvas.drawBitmap(mControlEnd.bitmap, mControlEnd.x, mControlEnd.y, null);
-        canvas.drawBitmap(mControlStart.bitmap, mControlStart.x, mControlStart.y, null);
+        canvas.drawBitmap(mControlEnd.bitmap, mControlEnd.x, mControlEnd.y + 20, null);
+        canvas.drawBitmap(mControlStart.bitmap, mControlStart.x, mControlStart.y + 20, null);
 
-        canvas.drawText(mControlStart.changeSecondToDuration(), minStartX - mRectS.width() / 4, mControlStart.y - 5, mPaintText);
-        canvas.drawText(mControlEnd.changeSecondToDuration(), maxEndX - mRectE.width() / 4, mControlEnd.y - 5, mPaintText);
+        canvas.drawText(mControlStart.changeSecondToDuration(), minStartX - mRectS.width() / 4, mControlStart.y, mPaintText);
+        canvas.drawText(mControlEnd.changeSecondToDuration(), maxEndX - mRectE.width() / 4, mControlEnd.y, mPaintText);
     }
 
     private boolean isTouchInside(float x, float y, Control control) {

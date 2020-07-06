@@ -14,15 +14,11 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class FeaturedFragmentViewModel @Inject constructor(
-    private val downloadAudioFromFirebaseUseCase: DownloadAudioFromFirebaseUseCase,
-    private val checkInternetConnectionUseCase: CheckInternetConnectionUseCase
+    private val downloadAudioFromFirebaseUseCase: DownloadAudioFromFirebaseUseCase
 ) : ViewModel() {
 
     var hotMusicList = MutableLiveData<MutableList<Music>>()
     var hotAlbumList = MutableLiveData<MutableList<Album>>()
-    val cb = downloadAudioFromFirebaseUseCase.observeData {
-        initData()
-    }
 
     init {
         hotMusicList.value = ArrayList()
@@ -30,6 +26,7 @@ class FeaturedFragmentViewModel @Inject constructor(
     }
 
     fun initData() {
+        Timber.d("congnm init data featured")
         getHotAlbum()
         getHotMusic()
     }

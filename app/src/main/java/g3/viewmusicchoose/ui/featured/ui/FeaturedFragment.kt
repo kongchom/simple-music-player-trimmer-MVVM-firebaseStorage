@@ -1,19 +1,19 @@
 package g3.viewmusicchoose.ui.featured.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import g3.viewmusicchoose.*
+import g3.viewmusicchoose.MusicApplication
+import g3.viewmusicchoose.R
 import g3.viewmusicchoose.ui.MainMusicActivity
 import g3.viewmusicchoose.ui.MainMusicViewModel
-import g3.viewmusicchoose.ui.featured.model.Album
-import g3.viewmusicchoose.util.AppConstant
 import g3.viewmusicchoose.util.MyMediaPlayer
 import kotlinx.android.synthetic.main.fragment_featured.*
 import timber.log.Timber
@@ -44,7 +44,7 @@ class FeaturedFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_featured,container,false)
+        return inflater.inflate(R.layout.fragment_featured, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -60,34 +60,54 @@ class FeaturedFragment : Fragment() {
         hotMusicRv = requireView().findViewById(R.id.featured_fragment_hot_music_rv)
         hotAlbumRv = requireView().findViewById(R.id.featured_fragment_hot_album_rv)
         hotAlbumDetailRv = requireView().findViewById(R.id.hot_album_details_rv)
+        fragment_featured_try_again.setOnClickListener {
+            mAct.mViewModel.initData()
+        }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun observeData() {
         mViewModel.hotMusicList.observe(requireActivity(), Observer {
             Timber.d("congnm onObserve hot music ${it.size}")
-            hotMusicAdapter = HotMusicAdapter(it,true)
+            hotMusicAdapter = HotMusicAdapter(it, true)
             hotMusicRv.adapter = hotMusicAdapter
-            rvLayoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+            rvLayoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             hotMusicRv.layoutManager = rvLayoutManager
 
             //make rv looping
-            hotMusicRv.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            hotMusicRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
                     val firstItemVisible = rvLayoutManager.findFirstVisibleItemPosition()
-                    if (firstItemVisible !=0 && firstItemVisible % it.size == 0) {
+                    if (firstItemVisible != 0 && firstItemVisible % it.size == 0) {
                         (hotMusicRv.layoutManager as LinearLayoutManager).scrollToPosition(0)
                     }
                 }
             })
+            //disable other scroll on touch hot album rv
+//            hotAlbumRv.setOnTouchListener { view, motionEvent ->
+//                when (motionEvent.action) {
+//                    MotionEvent.ACTION_DOWN,
+//                    MotionEvent.ACTION_SCROLL-> mAct.viewPager.beginFakeDrag()
+//                    MotionEvent.ACTION_UP -> mAct.viewPager.endFakeDrag()
+//                }
+//                view.onTouchEvent(motionEvent)
+//            }
+
             /**
              * Handle on hot music item click
              */
             hotMusicAdapter.onItemClick = { item, position ->
 
                 //Reset select state of other adapter
-                listener.onChangeAlbum(isInHotMusic = true, isInHotAlbum = false, isInMyMusic = false, isInEffectAlbum = false)
-                listener.onChangeAdapter(hotMusicAdapter,null)
+                listener.onChangeAlbum(
+                    isInHotMusic = true,
+                    isInHotAlbum = false,
+                    isInMyMusic = false,
+                    isInEffectAlbum = false
+                )
+                listener.onChangeAdapter(hotMusicAdapter, null)
                 listener.onClearSelectedState()
                 //check is same track?
                 if (position != hotMusicAdapter.lastPosition) {
@@ -105,12 +125,12 @@ class FeaturedFragment : Fragment() {
                         //in case item is not downloaded yet
                         //download file
                         mAct.setShowLoadingVm(true)
-                        mAct.downloadCurrentTrack(item, position)
+                        mAct.downloadCurrentTrack(item, position, hotMusicAdapter)
                     }
                 } else {
                     //in case is same track = true
                     if (!item.isDownloaded && !mainMusicViewModel.checkFileExist(item)) {
-                        mAct.downloadCurrentTrack(item, position)
+                        mAct.downloadCurrentTrack(item, position, hotMusicAdapter)
                     }
                 }
                 //listener for play pause button and trim view
@@ -126,14 +146,24 @@ class FeaturedFragment : Fragment() {
             hotAlbumAdapter.onItemClick = { item, position ->
                 //set needed views and set isInHotAlbum = true
                 mAct.initAlbumDetailsView(item)
-                listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = true, isInMyMusic = false, isInEffectAlbum = false)
-                hotAlbumItemAdapter = HotMusicAdapter(it[position].getListAudio(),false)
+                listener.onChangeAlbum(
+                    isInHotMusic = false,
+                    isInHotAlbum = true,
+                    isInMyMusic = false,
+                    isInEffectAlbum = false
+                )
+                hotAlbumItemAdapter = HotMusicAdapter(it[position].getListAudio(), false)
                 hot_album_details_rv.adapter = hotAlbumItemAdapter
 
                 hotAlbumItemAdapter?.onItemClick = { item, position ->
                     //Reset select state of other adapter
-                    listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = true, isInMyMusic = false, isInEffectAlbum = false)
-                    listener.onChangeAdapter(hotAlbumItemAdapter,null)
+                    listener.onChangeAlbum(
+                        isInHotMusic = false,
+                        isInHotAlbum = true,
+                        isInMyMusic = false,
+                        isInEffectAlbum = false
+                    )
+                    listener.onChangeAdapter(hotAlbumItemAdapter, null)
                     listener.onClearSelectedState()
                     if (position != hotAlbumItemAdapter?.lastPosition) {
                         //Set item is selected
@@ -148,11 +178,11 @@ class FeaturedFragment : Fragment() {
                             //in case item is not downloaded yet
                             //download file
                             mAct.setShowLoadingVm(true)
-                            mAct.downloadCurrentTrack(item,position)
+                            mAct.downloadCurrentTrack(item, position, hotAlbumItemAdapter!!)
                         }
                     } else {
                         if (!item.isDownloaded && !mainMusicViewModel.checkFileExist(item)) {
-                            mAct.downloadCurrentTrack(item,position)
+                            mAct.downloadCurrentTrack(item, position, hotAlbumItemAdapter!!)
                         }
                     }
                     mAct.initPlayMusicView(item)
@@ -160,14 +190,36 @@ class FeaturedFragment : Fragment() {
                     mAct.handleTrim(item)
                 }
 
-                hot_album_details_rv.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
+                hot_album_details_rv.layoutManager =
+                    LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
             }
-            featured_fragment_hot_album_rv.layoutManager = LinearLayoutManager(requireActivity(),LinearLayoutManager.HORIZONTAL,false)
+            featured_fragment_hot_album_rv.layoutManager =
+                LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
         })
+
+        mAct.mViewModel.isShowErrorScreen.observe(viewLifecycleOwner, Observer { needToShowErrorScreen ->
+                if (needToShowErrorScreen) {
+                    fragment_feature_error_view_container.visibility = View.VISIBLE
+                    featured_fragment_tv_hot_album.visibility = View.GONE
+                    featured_fragment_tv_hot_music.visibility = View.GONE
+                    featured_fragment_hot_album_rv.visibility = View.GONE
+                    featured_fragment_hot_music_rv.visibility = View.GONE
+                } else {
+                    mViewModel.initData()
+                    fragment_feature_error_view_container.visibility = View.GONE
+                    featured_fragment_tv_hot_album.visibility = View.VISIBLE
+                    featured_fragment_tv_hot_music.visibility = View.VISIBLE
+                    featured_fragment_hot_album_rv.visibility = View.VISIBLE
+                    featured_fragment_hot_music_rv.visibility = View.VISIBLE
+                }
+            })
     }
 
     companion object {
-        fun newInstance(mAct: MainMusicActivity, listener: MainMusicActivity.HandleOnActivity): FeaturedFragment {
+        fun newInstance(
+            mAct: MainMusicActivity,
+            listener: MainMusicActivity.HandleOnActivity
+        ): FeaturedFragment {
             val fragment = FeaturedFragment()
             fragment.mAct = mAct
             fragment.listener = listener

@@ -1,6 +1,7 @@
 package g3.viewmusicchoose.ui
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -26,8 +27,8 @@ import g3.viewmusicchoose.ui.featured.ui.FeaturedFragment
 import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
 import g3.viewmusicchoose.ui.mymusic.MyMusicAdapter
 import g3.viewmusicchoose.ui.mymusic.MyMusicFragment
-import g3.viewmusicchoose.util.AppConstant
 import g3.viewmusicchoose.util.AppConstant.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE
+import g3.viewmusicchoose.util.AppConstant.MY_RESULT_CODE_CHOOSE_MUSIC
 import g3.viewmusicchoose.util.AppConstant.TAB_LAYOUT_SIZE
 import g3.viewmusicchoose.util.MyMediaPlayer
 import kotlinx.android.synthetic.main.activity_main_music.*
@@ -38,7 +39,7 @@ import javax.inject.Inject
 
 class MainMusicActivity : AppCompatActivity() {
 
-    private lateinit var viewPager: ViewPager2
+    lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
     lateinit var playMusicView: View
     lateinit var trimView: CustomTrimView
@@ -60,6 +61,9 @@ class MainMusicActivity : AppCompatActivity() {
     var effectItemAdapter: HotMusicAdapter? = null
     var myMusicAdapter: MyMusicAdapter? = null
     var handler = Handler()
+    var currentMusicTrack: Music? = null
+    var currentLocalSong: LocalSong? = null
+
     lateinit var mediaPlayer: MyMediaPlayer
 
     @Inject
@@ -67,7 +71,15 @@ class MainMusicActivity : AppCompatActivity() {
 
     var listener = object : HandleOnActivity {
         override fun onClickAddButton(name: String, duration: Int, path: String, startTime: Int, endTime: Int) {
-
+            // Setup Bundle
+            val resultIntent = Intent()
+            resultIntent.putExtra("path", path)
+            resultIntent.putExtra("name", name)
+            resultIntent.putExtra("start", startTime)
+            resultIntent.putExtra("end", endTime)
+            resultIntent.putExtra("duration", duration)
+            setResult(MY_RESULT_CODE_CHOOSE_MUSIC,resultIntent)
+            finish()
         }
 
         override fun onChangeAlbum(isInHotMusic: Boolean, isInHotAlbum: Boolean, isInMyMusic: Boolean, isInEffectAlbum: Boolean) {
@@ -89,6 +101,7 @@ class MainMusicActivity : AppCompatActivity() {
                 this@MainMusicActivity.effectItemAdapter?.resetSelectedState()
             }
             if (isInMyMusic) {
+                Timber.d("set is in my music")
                 this@MainMusicActivity.hotAlbumItemAdapter?.resetSelectedState()
                 this@MainMusicActivity.hotMusicAdapter?.resetSelectedState()
                 this@MainMusicActivity.effectItemAdapter?.resetSelectedState()
@@ -110,7 +123,6 @@ class MainMusicActivity : AppCompatActivity() {
                 this@MainMusicActivity.hotAlbumItemAdapter = hotMusicAdapter
             }
             if (isInMyMusic) {
-                Timber.d("set is in my music")
                 this@MainMusicActivity.myMusicAdapter = myMusicAdapter
             }
             if (isInEffectAlbum) {
@@ -133,15 +145,7 @@ class MainMusicActivity : AppCompatActivity() {
     }
 
     private fun observeData() {
-        mViewModel.isShowErrorScreen.observe(this, Observer { needToShowErrorScreen ->
-            if (needToShowErrorScreen) {
-                Timber.d("congnm show error true")
 
-            } else {
-                Timber.d("congnm show error false")
-
-            }
-        })
         mViewModel.showProgressDialog.observe(this, Observer { isShowDialog ->
             if (isShowDialog) {
                 Timber.d("congnm show progress dialog")
@@ -154,7 +158,14 @@ class MainMusicActivity : AppCompatActivity() {
     }
 
     private fun initListeners() {
-
+        music_activity_btn_add.setOnClickListener {
+            currentLocalSong?.let {
+                listener.onClickAddButton(it.songTitle,it.duration,it.songData,trimView.timeStart,trimView.timeEnd)
+            }
+            currentMusicTrack?.let {
+                listener.onClickAddButton(it.name,it.duration,GlobalDef.FOLDER_AUDIO + it.name,trimView.timeStart,trimView.timeEnd)
+            }
+        }
     }
 
     private fun requestWriteStoragePermission() {
@@ -195,7 +206,6 @@ class MainMusicActivity : AppCompatActivity() {
                             hot_album_details_rv.visibility = View.GONE
                             }
                             activityTitle.text = getString(R.string.activity_title)
-                            this@MainMusicActivity.hotAlbumItemAdapter?.resetSelectedState()
                         }
                     1 -> {
                         activityTitle.text = getString(R.string.activity_title)
@@ -207,7 +217,6 @@ class MainMusicActivity : AppCompatActivity() {
                                 effect_fragment_effect_details_rv.visibility = View.GONE
                             }
                             activityTitle.text = getString(R.string.activity_title)
-                            this@MainMusicActivity.effectItemAdapter?.resetSelectedState()
                         }
                     }
                 }
@@ -245,11 +254,15 @@ class MainMusicActivity : AppCompatActivity() {
     }
 
     fun playSelectedTrack(item: Music) {
+        currentMusicTrack = item
+        currentLocalSong = null
         mediaPlayer.playSound(item.audioFileName, null)
         playMusicButton.setImageResource(R.drawable.icon_pause)
     }
 
     fun playSelectedTrack(item: LocalSong) {
+        currentLocalSong = item
+        currentMusicTrack = null
         mediaPlayer.playSound("", item.songData)
         playMusicButton.setImageResource(R.drawable.icon_pause)
     }
@@ -409,7 +422,7 @@ class MainMusicActivity : AppCompatActivity() {
         super.onDestroy()
     }
 
-    fun downloadCurrentTrack(item: Music, position: Int) {
+    fun downloadCurrentTrack(item: Music, position: Int, adapter: HotMusicAdapter) {
         mViewModel.downloadCurrentTrack(item.audioFileName) { downloadSucceed ->
             if (downloadSucceed) {
                 //if download succeed -> do 3 jobs: play music, show toast, set item downloaded = true
@@ -418,7 +431,7 @@ class MainMusicActivity : AppCompatActivity() {
                 playSelectedTrack(item)
                 mViewModel.updateItemHotMusic(item)
                 Toast.makeText(this,R.string.download_succeed, Toast.LENGTH_SHORT).show()
-                hotMusicAdapter?.setItemDownloaded(position)
+                adapter.setItemDownloaded(position)
             } else {
                 //in case download fail: show toast
                 setShowLoadingVm(false)
