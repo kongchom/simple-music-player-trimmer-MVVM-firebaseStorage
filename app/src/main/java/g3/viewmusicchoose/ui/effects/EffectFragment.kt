@@ -33,6 +33,7 @@ class EffectFragment : Fragment() {
     lateinit var effectDetailsRecyclerView: RecyclerView
     lateinit var effectRvAdapter: EffectAlbumAdapter
     lateinit var effectDetailRvAdapter: HotMusicAdapter
+    private var previousEffectDetailAdapter: HotMusicAdapter? = null
     lateinit var mediaPlayer: MyMediaPlayer
     private lateinit var mAct: MainMusicActivity
     private lateinit var listener: MainMusicActivity.HandleOnActivity
@@ -74,6 +75,8 @@ class EffectFragment : Fragment() {
 
                 effectDetailRvAdapter.onItemClick = { item, position ->
                     //Set play view = visible, set data for play music view
+                    previousEffectDetailAdapter?.resetSelectedState()
+                    previousEffectDetailAdapter = effectDetailRvAdapter
                     mAct.initPlayMusicView(item)
                     //Reset select state of other adapters
                     listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = false, isInMyMusic = false, isInEffectAlbum = true)

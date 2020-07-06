@@ -55,6 +55,7 @@ class MainMusicActivity : AppCompatActivity() {
     var isInEffectAlbum: Boolean = false
     var isInMyMusic: Boolean = false
     var isInHotMusic: Boolean = false
+    var isInTabMyMusic: Boolean = false
     var mCurrentFrag = FeaturedFragment()
     var hotMusicAdapter: HotMusicAdapter? = null
     var hotAlbumItemAdapter: HotMusicAdapter? = null
@@ -70,7 +71,13 @@ class MainMusicActivity : AppCompatActivity() {
     lateinit var mViewModel: MainMusicViewModel
 
     var listener = object : HandleOnActivity {
-        override fun onClickAddButton(name: String, duration: Int, path: String, startTime: Int, endTime: Int) {
+        override fun onClickAddButton(
+            name: String,
+            duration: Int,
+            path: String,
+            startTime: Int,
+            endTime: Int
+        ) {
             // Setup Bundle
             val resultIntent = Intent()
             resultIntent.putExtra("path", path)
@@ -78,11 +85,16 @@ class MainMusicActivity : AppCompatActivity() {
             resultIntent.putExtra("start", startTime)
             resultIntent.putExtra("end", endTime)
             resultIntent.putExtra("duration", duration)
-            setResult(MY_RESULT_CODE_CHOOSE_MUSIC,resultIntent)
+            setResult(MY_RESULT_CODE_CHOOSE_MUSIC, resultIntent)
             finish()
         }
 
-        override fun onChangeAlbum(isInHotMusic: Boolean, isInHotAlbum: Boolean, isInMyMusic: Boolean, isInEffectAlbum: Boolean) {
+        override fun onChangeAlbum(
+            isInHotMusic: Boolean,
+            isInHotAlbum: Boolean,
+            isInMyMusic: Boolean,
+            isInEffectAlbum: Boolean
+        ) {
             this@MainMusicActivity.isInHotMusic = isInHotMusic
             this@MainMusicActivity.isInHotAlbum = isInHotAlbum
             this@MainMusicActivity.isInMyMusic = isInMyMusic
@@ -113,7 +125,10 @@ class MainMusicActivity : AppCompatActivity() {
             }
         }
 
-        override fun onChangeAdapter(hotMusicAdapter: HotMusicAdapter?, myMusicAdapter: MyMusicAdapter?) {
+        override fun onChangeAdapter(
+            hotMusicAdapter: HotMusicAdapter?,
+            myMusicAdapter: MyMusicAdapter?
+        ) {
             if (isInHotMusic) {
                 Timber.d("set is in hot music")
                 this@MainMusicActivity.hotMusicAdapter = hotMusicAdapter
@@ -160,10 +175,22 @@ class MainMusicActivity : AppCompatActivity() {
     private fun initListeners() {
         music_activity_btn_add.setOnClickListener {
             currentLocalSong?.let {
-                listener.onClickAddButton(it.songTitle,it.duration,it.songData,trimView.timeStart,trimView.timeEnd)
+                listener.onClickAddButton(
+                    it.songTitle,
+                    it.duration,
+                    it.songData,
+                    trimView.timeStart,
+                    trimView.timeEnd
+                )
             }
             currentMusicTrack?.let {
-                listener.onClickAddButton(it.name,it.duration,GlobalDef.FOLDER_AUDIO + it.name,trimView.timeStart,trimView.timeEnd)
+                listener.onClickAddButton(
+                    it.name,
+                    it.duration,
+                    GlobalDef.FOLDER_AUDIO + it.name,
+                    trimView.timeStart,
+                    trimView.timeEnd
+                )
             }
         }
     }
@@ -201,23 +228,32 @@ class MainMusicActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 when (position) {
                     0 -> {
-                        if (isInHotAlbum) {
+                        if (isInHotAlbum || isInTabMyMusic) {
                             fragment_featured_container.visibility = View.VISIBLE
                             hot_album_details_rv.visibility = View.GONE
-                            }
-                            activityTitle.text = getString(R.string.activity_title)
                         }
+                        if (isInEffectAlbum) {
+                            effect_fragment_rv.visibility = View.VISIBLE
+                            effect_fragment_effect_details_rv.visibility = View.GONE
+                        }
+                        activityTitle.text = getString(R.string.activity_title)
+                        isInTabMyMusic = false
+                    }
                     1 -> {
+                        isInTabMyMusic = true
                         activityTitle.text = getString(R.string.activity_title)
                     }
                     2 -> {
-                        if (isInEffectAlbum || isInHotAlbum || isInMyMusic || isInHotMusic) {
-                            if (isInEffectAlbum) {
-                                effect_fragment_rv.visibility = View.VISIBLE
-                                effect_fragment_effect_details_rv.visibility = View.GONE
-                            }
-                            activityTitle.text = getString(R.string.activity_title)
+                        if (isInHotAlbum) {
+                            fragment_featured_container.visibility = View.VISIBLE
+                            hot_album_details_rv.visibility = View.GONE
                         }
+                        if (isInEffectAlbum || isInTabMyMusic) {
+                            effect_fragment_rv.visibility = View.VISIBLE
+                            effect_fragment_effect_details_rv.visibility = View.GONE
+                        }
+                        activityTitle.text = getString(R.string.activity_title)
+                        isInTabMyMusic = false
                     }
                 }
             }
@@ -387,17 +423,17 @@ class MainMusicActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         when {
-            isInHotAlbum -> {
+            isInHotAlbum && !isInTabMyMusic -> {
                 activityTitle.text = getString(R.string.activity_title)
                 fragment_featured_container.visibility = View.VISIBLE
                 hot_album_details_rv.visibility = View.GONE
             }
-            isInEffectAlbum -> {
+            isInEffectAlbum && !isInTabMyMusic -> {
                 activityTitle.text = getString(R.string.activity_title)
                 effect_fragment_rv.visibility = View.VISIBLE
                 effect_fragment_effect_details_rv.visibility = View.GONE
             }
-            isInMyMusic -> {
+            isInTabMyMusic -> {
                 super.onBackPressed()
             }
             else -> {
@@ -430,12 +466,12 @@ class MainMusicActivity : AppCompatActivity() {
                 initPlayMusicView(item)
                 playSelectedTrack(item)
                 mViewModel.updateItemHotMusic(item)
-                Toast.makeText(this,R.string.download_succeed, Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, R.string.download_succeed, Toast.LENGTH_SHORT).show()
                 adapter.setItemDownloaded(position)
             } else {
                 //in case download fail: show toast
                 setShowLoadingVm(false)
-                Toast.makeText(this,R.string.download_fail, Toast.LENGTH_LONG).show()
+                Toast.makeText(this, R.string.download_fail, Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -448,9 +484,20 @@ class MainMusicActivity : AppCompatActivity() {
     }
 
     interface HandleOnActivity {
-        fun onClickAddButton(name: String, duration: Int, path: String, startTime: Int, endTime: Int)
+        fun onClickAddButton(
+            name: String,
+            duration: Int,
+            path: String,
+            startTime: Int,
+            endTime: Int
+        )
 
-        fun onChangeAlbum(isInHotMusic: Boolean, isInHotAlbum: Boolean, isInMyMusic: Boolean, isInEffectAlbum: Boolean)
+        fun onChangeAlbum(
+            isInHotMusic: Boolean,
+            isInHotAlbum: Boolean,
+            isInMyMusic: Boolean,
+            isInEffectAlbum: Boolean
+        )
 
         fun onClearSelectedState()
 

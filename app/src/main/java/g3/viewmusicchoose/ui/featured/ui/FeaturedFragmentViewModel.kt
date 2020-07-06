@@ -19,7 +19,9 @@ class FeaturedFragmentViewModel @Inject constructor(
 
     var hotMusicList = MutableLiveData<MutableList<Music>>()
     var hotAlbumList = MutableLiveData<MutableList<Album>>()
-
+    var cb = downloadAudioFromFirebaseUseCase.observeData {
+        initData()
+    }
     init {
         hotMusicList.value = ArrayList()
         hotAlbumList.value = ArrayList()

@@ -33,6 +33,7 @@ class FeaturedFragment : Fragment() {
     private lateinit var hotMusicAdapter: HotMusicAdapter
     private lateinit var hotAlbumAdapter: HotAlbumAdapter
     private var hotAlbumItemAdapter: HotMusicAdapter? = null
+    private var previousHotAlbumItemAdapter: HotMusicAdapter? = null
     private lateinit var mAct: MainMusicActivity
     private lateinit var listener: MainMusicActivity.HandleOnActivity
     lateinit var rvLayoutManager: LinearLayoutManager
@@ -146,23 +147,15 @@ class FeaturedFragment : Fragment() {
             hotAlbumAdapter.onItemClick = { item, position ->
                 //set needed views and set isInHotAlbum = true
                 mAct.initAlbumDetailsView(item)
-                listener.onChangeAlbum(
-                    isInHotMusic = false,
-                    isInHotAlbum = true,
-                    isInMyMusic = false,
-                    isInEffectAlbum = false
-                )
+                listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = true, isInMyMusic = false, isInEffectAlbum = false)
                 hotAlbumItemAdapter = HotMusicAdapter(it[position].getListAudio(), false)
                 hot_album_details_rv.adapter = hotAlbumItemAdapter
 
                 hotAlbumItemAdapter?.onItemClick = { item, position ->
                     //Reset select state of other adapter
-                    listener.onChangeAlbum(
-                        isInHotMusic = false,
-                        isInHotAlbum = true,
-                        isInMyMusic = false,
-                        isInEffectAlbum = false
-                    )
+                    previousHotAlbumItemAdapter?.resetSelectedState()
+                    previousHotAlbumItemAdapter = hotAlbumItemAdapter
+                    listener.onChangeAlbum(isInHotMusic = false, isInHotAlbum = true, isInMyMusic = false, isInEffectAlbum = false)
                     listener.onChangeAdapter(hotAlbumItemAdapter, null)
                     listener.onClearSelectedState()
                     if (position != hotAlbumItemAdapter?.lastPosition) {

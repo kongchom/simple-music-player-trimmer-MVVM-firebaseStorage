@@ -19,6 +19,9 @@ class EffectViewModel @Inject constructor(
 ) : ViewModel() {
 
     var effectAlbumList = MutableLiveData<MutableList<EffectAlbum>>()
+    var cb = downloadAudioFromFirebaseUseCase.observeData {
+        initData()
+    }
 
     init {
         effectAlbumList.value = ArrayList()
