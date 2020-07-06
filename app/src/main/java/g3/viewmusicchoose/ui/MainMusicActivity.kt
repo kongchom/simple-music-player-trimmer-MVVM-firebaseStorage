@@ -467,7 +467,9 @@ class MainMusicActivity : AppCompatActivity() {
                 setShowLoadingVm(false)
                 initPlayMusicView(item)
                 playSelectedTrack(item)
+                mViewModel.updateItemHotMusic(item)
                 Toast.makeText(this, R.string.download_succeed, Toast.LENGTH_SHORT).show()
+                adapter.setItemDownloaded(position)
             } else {
                 //in case download fail: show toast
                 setShowLoadingVm(false)
