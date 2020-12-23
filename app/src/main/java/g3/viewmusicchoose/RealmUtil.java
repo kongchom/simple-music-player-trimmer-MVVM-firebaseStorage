@@ -1,12 +1,9 @@
 package g3.viewmusicchoose;
 
 import java.util.List;
-import java.util.Map;
 
 import io.realm.Realm;
 import io.realm.RealmObject;
-import io.realm.RealmQuery;
-import io.realm.RealmResults;
 
 public class RealmUtil {
     private static RealmUtil sInstance;
@@ -25,10 +22,10 @@ public class RealmUtil {
     }
 
     public <E extends RealmObject> List<E> getList(Class<E> eClass) {
-        return convertRealmToList(eClass, sRealm.where(eClass).findAll());
+        return convertRealmToList(sRealm.where(eClass).findAll());
     }
 
-    private <E extends RealmObject> List<E> convertRealmToList(Class<E> eClass, List<E> objSources) {
+    private <E extends RealmObject> List<E> convertRealmToList(List<E> objSources) {
         return sRealm.copyFromRealm(objSources);
     }
 }

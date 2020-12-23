@@ -38,8 +38,8 @@ public class CustomTrimView extends View {
     private Bitmap mBitmapEnd;
     private Control mControlStart;
     private Control mControlEnd;
-    private Rect mRectS = new Rect();
-    private Rect mRectE = new Rect();
+    private final Rect mRectS = new Rect();
+    private final Rect mRectE = new Rect();
     private float minStartX = 0;
     private float minEndX = 0;
     private float maxStartX = 0;
@@ -135,11 +135,6 @@ public class CustomTrimView extends View {
         float width = getWidth();
         float height = getHeight();
         drawTrimMp3(canvas, width, height);
-    }
-
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
     }
 
     @Override
@@ -326,11 +321,11 @@ public class CustomTrimView extends View {
     }
 
 
-    private class Control {
+    private static class Control {
         float duration;
         float x;
         float y;
-        Bitmap bitmap;
+        final Bitmap bitmap;
         int type;
 
         Control(float duration, float x, float y, Bitmap bitmap, int type) {

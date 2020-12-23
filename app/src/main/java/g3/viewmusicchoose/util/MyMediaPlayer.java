@@ -1,7 +1,6 @@
 package g3.viewmusicchoose.util;
 
 import android.content.Context;
-import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Handler;
@@ -21,7 +20,7 @@ public final class MyMediaPlayer {
 
     private static volatile MyMediaPlayer instance = null;
     MediaPlayer mp;
-    private Context context;
+    private final Context context;
 
     private MyMediaPlayer(Context context) {
         this.context = context;
@@ -60,13 +59,10 @@ public final class MyMediaPlayer {
             instance.mp.setVolume(100f, 100f);
             instance.mp.setLooping(false);
             instance.mp.start();
-            instance.mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    if (instance.mp != null) {
-                        instance.mp.reset();
-                        instance.mp = null;
-                    }
+            instance.mp.setOnCompletionListener(mp -> {
+                if (instance.mp != null) {
+                    instance.mp.reset();
+                    instance.mp = null;
                 }
             });
         } catch (IOException e) {
@@ -124,13 +120,10 @@ public final class MyMediaPlayer {
             instance.mp.setVolume(100f, 100f);
             instance.mp.setLooping(true);
             instance.mp.start();
-            instance.mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mp) {
-                    if (mp != null) {
-                        mp.reset();
-                        mp = null;
-                    }
+            instance.mp.setOnCompletionListener(mp -> {
+                if (mp != null) {
+                    mp.reset();
+                    mp = null;
                 }
             });
         } catch (IOException e) {

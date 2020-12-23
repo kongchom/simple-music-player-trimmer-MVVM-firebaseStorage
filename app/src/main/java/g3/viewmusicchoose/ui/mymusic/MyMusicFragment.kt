@@ -1,16 +1,12 @@
 package g3.viewmusicchoose.ui.mymusic
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import g3.viewmusicchoose.CustomTrimView
 import g3.viewmusicchoose.MusicApplication
 import g3.viewmusicchoose.MusicUtils
 import g3.viewmusicchoose.R

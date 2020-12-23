@@ -5,16 +5,11 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import g3.viewmusicchoose.CustomProgressBar
-import g3.viewmusicchoose.CustomTrimView
 import g3.viewmusicchoose.MusicApplication
 import g3.viewmusicchoose.R
 import g3.viewmusicchoose.ui.MainMusicActivity
@@ -22,7 +17,6 @@ import g3.viewmusicchoose.ui.MainMusicViewModel
 import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
 import g3.viewmusicchoose.util.MyMediaPlayer
 import kotlinx.android.synthetic.main.fragment_effect.*
-import kotlinx.android.synthetic.main.fragment_featured.*
 import timber.log.Timber
 import javax.inject.Inject
 

@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.R
 import g3.viewmusicchoose.ui.featured.model.Album
 import kotlinx.android.synthetic.main.item_hot_album.view.*

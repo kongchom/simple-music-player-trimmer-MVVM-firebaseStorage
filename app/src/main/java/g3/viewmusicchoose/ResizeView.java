@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class ResizeView {
-    private static int widthStand= 1080;
+    private static final int widthStand= 1080;
 
     protected static DisplayMetrics getDisplayInfo() {
         return Resources.getSystem().getDisplayMetrics();

@@ -69,11 +69,9 @@ public class FunctionUtils {
         MediaScannerConnection.scanFile(contexts,
                 paths,
                 null,
-                new MediaScannerConnection.OnScanCompletedListener() {
-                    public void onScanCompleted(String path, Uri uri) {
-                        // scanned path and uri
+                (path, uri) -> {
+                    // scanned path and uri
 //                        Lo.d("SCAN MEDIA FILE", "SCAN MEDIA COMPLETED: " + path);
-                    }
                 });
     }
 

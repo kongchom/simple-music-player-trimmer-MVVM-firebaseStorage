@@ -6,9 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.LocalSong
-import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.R
-import g3.viewmusicchoose.ui.featured.ui.HotMusicAdapter
 import kotlinx.android.synthetic.main.item_hot_music.view.*
 import timber.log.Timber
 

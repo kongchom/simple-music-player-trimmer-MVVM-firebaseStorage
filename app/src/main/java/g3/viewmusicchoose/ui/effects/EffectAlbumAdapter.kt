@@ -5,10 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import g3.viewmusicchoose.R
-import g3.viewmusicchoose.ui.featured.model.Album
-import g3.viewmusicchoose.ui.featured.ui.HotAlbumAdapter
 import kotlinx.android.synthetic.main.item_effect_album.view.*
-import kotlinx.android.synthetic.main.item_hot_album.view.*
 
 class EffectAlbumAdapter constructor(var effectAlbumList: List<EffectAlbum>) :
     RecyclerView.Adapter<EffectAlbumAdapter.EffectAlbumViewHolder>() {

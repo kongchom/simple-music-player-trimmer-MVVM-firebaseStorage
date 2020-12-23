@@ -4,11 +4,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import com.google.gson.annotations.SerializedName
 import g3.viewmusicchoose.Music
-import io.realm.Realm
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
-import io.realm.internal.KeepMember
 import java.io.File
 
 open class EffectAlbum: RealmObject() {

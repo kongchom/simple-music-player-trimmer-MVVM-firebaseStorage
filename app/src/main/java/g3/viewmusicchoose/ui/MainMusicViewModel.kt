@@ -31,7 +31,7 @@ class MainMusicViewModel @Inject constructor(
         isShowErrorScreen.value = false
         showProgressDialog.value = false
         numberOfLoad  = SharePrefUtils.getInt(GlobalDef.SHARF_RELOAD_LIST_AUDIO,0)
-        Timber.d("congnm numberOfLoad ${numberOfLoad.toString()}")
+        Timber.d("congnm numberOfLoad $numberOfLoad")
     }
 
     /**
@@ -42,7 +42,7 @@ class MainMusicViewModel @Inject constructor(
         if (numberOfLoad % 5 == 0) {
             //check wifi to download list
             checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isConnected ->
-                Timber.d("congnm request wifi ${isConnected.toString()}")
+                Timber.d("congnm request wifi $isConnected")
                 if (isConnected) {
                     requestStringConfig()
                 } else {
@@ -54,7 +54,7 @@ class MainMusicViewModel @Inject constructor(
             //case no wifi -> exit app -> turn on wifi -> enter app again
             if (RealmUtil.getInstance().getList(Music::class.java).isNullOrEmpty() || RealmUtil.getInstance().getList(Album::class.java).isNullOrEmpty()) {
                 checkInternetConnectionUseCase.request().applyScheduler().subscribe({ isConnected ->
-                    Timber.d("congnm request wifi ${isConnected.toString()}")
+                    Timber.d("congnm request wifi $isConnected")
                     if (isConnected) {
                         requestStringConfig()
                     } else {

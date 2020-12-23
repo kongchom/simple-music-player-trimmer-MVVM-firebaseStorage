@@ -36,7 +36,7 @@ public class MusicResponse {
         return null;
     }
 
-    private class MainData {
+    private static class MainData {
         @SerializedName("list_audio")
         private List<Music> audios;
 

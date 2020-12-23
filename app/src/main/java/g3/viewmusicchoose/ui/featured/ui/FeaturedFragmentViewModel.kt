@@ -1,20 +1,17 @@
 package g3.viewmusicchoose.ui.featured.ui
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import g3.viewmusicchoose.Music
 import g3.viewmusicchoose.RealmUtil
-import g3.viewmusicchoose.repo.CheckInternetConnectionUseCase
 import g3.viewmusicchoose.ui.featured.model.Album
 import g3.viewmusicchoose.ui.featured.model.DownloadAudioFromFirebaseUseCase
-import g3.viewmusicchoose.util.applyScheduler
 import g3.viewmusicchoose.util.notifyObserver
 import timber.log.Timber
 import javax.inject.Inject
 
 class FeaturedFragmentViewModel @Inject constructor(
-    private val downloadAudioFromFirebaseUseCase: DownloadAudioFromFirebaseUseCase
+    downloadAudioFromFirebaseUseCase: DownloadAudioFromFirebaseUseCase
 ) : ViewModel() {
 
     var hotMusicList = MutableLiveData<MutableList<Music>>()

@@ -51,7 +51,7 @@ public class MusicUtils {
                     if (timeMusic != null && !timeMusic.isEmpty()) {
                         GSC.setTime(timeMusic);
                     } else {
-                        if (!FunctionUtils.isBlank(fileMusic)) {
+                        if (FunctionUtils.isBlank(fileMusic)) {
                             GSC.setTime(String.valueOf(VideoUtils.getDurationVideo(fileMusic)));
                         } else {
                             GSC.setTime("0");

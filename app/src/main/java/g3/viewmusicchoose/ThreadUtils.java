@@ -81,12 +81,9 @@ public class ThreadUtils {
      */
     public Handler runOnUI(final IHandler mIHandler) {
         Handler handler = new Handler();
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mIHandler != null) {
-                    mIHandler.onWork();
-                }
+        handler.post(() -> {
+            if (mIHandler != null) {
+                mIHandler.onWork();
             }
         });
         return handler;
@@ -102,13 +99,9 @@ public class ThreadUtils {
      */
     public Handler runUIDelay(final IHandler mIHandler, final int timeDelay) {
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                if (mIHandler != null) {
-                    mIHandler.onWork();
-                }
+        handler.postDelayed(() -> {
+            if (mIHandler != null) {
+                mIHandler.onWork();
             }
         }, timeDelay);
         return handler;

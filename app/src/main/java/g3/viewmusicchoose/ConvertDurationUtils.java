@@ -10,15 +10,4 @@ public class ConvertDurationUtils {
         }
         return "00:00";
     }
-
-    public static String convertDurationFormat(int totalSeconds) {
-        int seconds = (totalSeconds % 60);
-        int minutes = (totalSeconds % 3600) / 60;
-        int hours = (totalSeconds % 86400) / 3600;
-        int days = (totalSeconds % (86400 * 30)) / 86400;
-        String h = ((hours < 10) ? "0" : "") + hours;
-        String m = ((minutes < 10) ? "0" : "") + minutes;
-        String s = ((seconds < 10) ? "0" : "") + seconds;
-        return h + ":" + m + ":" + s;
-    }
 }

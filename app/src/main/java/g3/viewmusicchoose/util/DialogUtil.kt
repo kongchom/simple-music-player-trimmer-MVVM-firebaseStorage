@@ -7,7 +7,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import g3.viewmusicchoose.FunctionUtils
 import g3.viewmusicchoose.R
-import g3.viewmusicchoose.util.DialogUtil.openAppSettings
 
 object DialogUtil {
 

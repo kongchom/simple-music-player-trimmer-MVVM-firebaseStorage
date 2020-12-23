@@ -69,9 +69,9 @@ public class LocalSong implements Serializable {
     }
 
     private Long getTime(String strNum) {
-        Long time;
+        long time;
         try {
-            time = Long.valueOf(strNum);
+            time = Long.parseLong(strNum);
         } catch (NumberFormatException | NullPointerException nfe) {
             time = 0L;
         }
@@ -94,7 +94,7 @@ public class LocalSong implements Serializable {
 
     // Get Seconds
     public int getDuration() {
-        if (!FunctionUtils.isBlank(time)) {
+        if (FunctionUtils.isBlank(time)) {
             if (time.contains(":")) {
                 return convertDateToDuration(time);
             }
