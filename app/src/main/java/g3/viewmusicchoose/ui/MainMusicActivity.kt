@@ -39,17 +39,17 @@ import javax.inject.Inject
 
 class MainMusicActivity : AppCompatActivity() {
 
-    lateinit var viewPager: ViewPager2
+    private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-    lateinit var playMusicView: View
-    lateinit var trimView: CustomTrimView
-    lateinit var playMusicButton: ImageView
-    lateinit var playMusicTrackTitle: TextView
+    private lateinit var playMusicView: View
+    private lateinit var trimView: CustomTrimView
+    private lateinit var playMusicButton: ImageView
+    private lateinit var playMusicTrackTitle: TextView
     lateinit var activityTitle: TextView
-    lateinit var activityBackButton: ImageView
-    lateinit var activityToolBar: LinearLayout
-    lateinit var playMusicTrackDuration: TextView
-    lateinit var mProgressDialog: CustomProgressBar
+    private lateinit var activityBackButton: ImageView
+    private lateinit var activityToolBar: LinearLayout
+    private lateinit var playMusicTrackDuration: TextView
+    private lateinit var mProgressDialog: CustomProgressBar
 
     var isInHotAlbum: Boolean = false
     var isInEffectAlbum: Boolean = false
@@ -61,11 +61,11 @@ class MainMusicActivity : AppCompatActivity() {
     var hotAlbumItemAdapter: HotMusicAdapter? = null
     var effectItemAdapter: HotMusicAdapter? = null
     var myMusicAdapter: MyMusicAdapter? = null
-    var handler = Handler()
-    var currentMusicTrack: Music? = null
-    var currentLocalSong: LocalSong? = null
+    private var handler = Handler()
+    private var currentMusicTrack: Music? = null
+    private var currentLocalSong: LocalSong? = null
 
-    lateinit var mediaPlayer: MyMediaPlayer
+    private lateinit var mediaPlayer: MyMediaPlayer
 
     @Inject
     lateinit var mViewModel: MainMusicViewModel
@@ -229,8 +229,8 @@ class MainMusicActivity : AppCompatActivity() {
                 when (position) {
                     0 -> {
                         if (isInHotAlbum || isInTabMyMusic) {
-                            fragment_featured_container.visibility = View.VISIBLE
-                            hot_album_details_rv.visibility = View.GONE
+                            fragment_featured_container?.visibility = View.VISIBLE
+                            hot_album_details_rv?.visibility = View.GONE
                         }
                         if (isInEffectAlbum) {
                             effect_fragment_rv.visibility = View.VISIBLE

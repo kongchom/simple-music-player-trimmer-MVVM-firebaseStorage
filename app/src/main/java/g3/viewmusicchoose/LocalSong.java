@@ -3,9 +3,9 @@ package g3.viewmusicchoose;
 import java.io.Serializable;
 
 public class LocalSong implements Serializable {
-    private String songTitle = ""; //tên bài hát
-    private String songArtist = "";//ca sĩ
-    private String songData = "";//dữ liệu bài hát
+    private String songTitle = "";
+    private String songArtist = "";
+    private String songData = "";
     private String isChecked = "false";
     private String time;
     private boolean isSelect;

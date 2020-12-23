@@ -16,4 +16,5 @@
     <string name="download_fail">Unsuccessful download. Please check your internet connection again!</string>
     <string name="download_succeed">Download Successful!</string>
     <string name="please_download_before_playing">Please download the file before playing!</string>
+    <string name="message_permission_denied">Permission Denied!</string>
 </resources>

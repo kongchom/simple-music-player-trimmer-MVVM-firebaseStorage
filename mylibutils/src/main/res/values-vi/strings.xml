@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="message_network_not_available">Kiểm tra kết nối mạng và thử lại</string>
-
-    <string name="message_permission_denied">Bạn không cấp quyền nên bạn không sử dụng được chức năng này.</string>
-    <string name="message_permission_denied_remember">Vui lòng vào cài đặt ứng dụng để cấp quyền sử dụng chức năng này.</string>
-</resources>
