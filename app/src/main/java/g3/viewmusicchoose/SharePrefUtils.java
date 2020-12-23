@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-/**
- * Created by do.trong.hung on 11/16/15.
- * Util class for {@link SharedPreferences} API
- */
 public class SharePrefUtils {
 
     private static SharedPreferences mSharePref;

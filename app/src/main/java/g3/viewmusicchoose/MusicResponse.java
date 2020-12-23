@@ -7,7 +7,7 @@ import java.util.List;
 import g3.viewmusicchoose.ui.effects.EffectAlbum;
 import g3.viewmusicchoose.ui.featured.model.Album;
 
-public class MusicResponse extends BaseResponse {
+public class MusicResponse {
 
     private MainData data;
 
@@ -36,10 +36,6 @@ public class MusicResponse extends BaseResponse {
         return null;
     }
 
-    public void setData(MainData data) {
-        this.data = data;
-    }
-
     private class MainData {
         @SerializedName("list_audio")
         private List<Music> audios;
@@ -60,13 +56,6 @@ public class MusicResponse extends BaseResponse {
 
         public List<EffectAlbum> getEffects() {
             return effects;
-        }
-
-        public void setAudios(List<Music> audios) {
-            this.audios = audios;
-        }
-        public void setAlbums(List<Album> albums) {
-            this.albums = albums;
         }
 
         public void setEffects(List<EffectAlbum> effects) {

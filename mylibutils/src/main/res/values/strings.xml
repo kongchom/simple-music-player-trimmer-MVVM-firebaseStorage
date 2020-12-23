@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">MyLibUtils</string>
-    <string name="message_network_not_available">Please check your connection or try again later</string>
-
-    <string name="message_permission_denied">Without this permission the app is unable to choose music for your video. Are you sure you want to deny this permission?</string>
-    <string name="message_permission_denied_remember">Please go to settings to re-grant permission for application</string>
-</resources>
